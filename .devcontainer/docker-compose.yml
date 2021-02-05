@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+    reachy-docker:
+        build:
+          context: ..
+          dockerfile: ./.devcontainer/Dockerfile
+        container_name: reachy-ros
+        ports:
+            - 6171:6171 # Reachy simulator
+        volumes:
+            - ..:/home/reachy/colab-reachy-ros
+        user: reachy
+        working_dir: /home/reachy
+        stdin_open: true
+        tty: true

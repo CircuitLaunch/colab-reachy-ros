@@ -1,0 +1,4 @@
+reachy==1.3.2
+numpy
+flake8
+black

@@ -1,0 +1,16 @@
+{
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "reachy-docker",
+    "workspaceFolder": "/home/reachy",
+    "extensions": ["ms-python.python", "eamodio.gitlens"],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": false,
+        "python.linting.flake8Enabled": true,
+        "python.linting.flake8Args": [
+            "--max-line-length=120"
+        ],
+        "python.formatting.provider": "black"
+    }
+}
