@@ -9,7 +9,7 @@ services:
         ports:
             - 6171:6171 # Reachy simulator
         volumes:
-            - ..:/home/reachy/colab-reachy-ros
+            - ..:/home/reachy/catkin_ws/src/colab-reachy-ros
         user: reachy
         working_dir: /home/reachy
         stdin_open: true
