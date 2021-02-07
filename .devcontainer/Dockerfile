@@ -1,7 +1,7 @@
 FROM osrf/ros:noetic-desktop-full-focal
 
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y git python3-pip
+RUN apt-get install -y git git-lfs python3-pip
 RUN apt-get install -y ros-noetic-moveit
 
 RUN groupadd reachy
