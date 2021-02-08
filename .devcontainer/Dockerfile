@@ -1,4 +1,4 @@
-FROM osrf/ros:noetic-desktop-full-focal
+FROM ros:noetic-robot-focal
 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y git git-lfs python3-pip
