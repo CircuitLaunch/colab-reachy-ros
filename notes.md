@@ -1,7 +1,7 @@
 ### Requirements of MoveIt
 [MoveItSimpleControllerManager](https://ros-planning.github.io/moveit_tutorials/doc/controller_configuration/controller_configuration_tutorial.html) expects the robot controller (provided by us) to provide [action servers](http://wiki.ros.org/actionlib) for [FollowJointTrajectory](http://docs.ros.org/en/api/control_msgs/html/action/FollowJointTrajectory.html) and optionally [GripperCommand](http://docs.ros.org/en/api/control_msgs/html/action/GripperCommand.html).
 
-Additionally, present joint positions should be published on the `/joint_states` topic (I think?)
+Additionally, present joint positions should be published on the `/joint_states` topic, and may need to be remapped to `/robot/joint_states`.
 
 ### All topics started by `roslaunch reachy_description display.launch`
 /clicked_point
@@ -219,3 +219,10 @@ velocity: []
 effort: []
 ---
 ```
+
+
+### All action servers started by `roslaunch reachy_moveit_config demo.launch`
+`/execute_trajectory`, provided by `/move_group`
+`/pickup`, provided by `/move_group`
+`/place`, provided by `/move_group`
+`/move_group`, provided by `/move_group` (yes, the `/move_group` node provides an action server with the same name. I don't know what it's for.)
