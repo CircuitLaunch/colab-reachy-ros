@@ -1,0 +1,7 @@
+<launch>
+  <node name="right_arm_controller" pkg="colab_reachy_ros" type="reachy_arm_controller.py" respawn="true" output="screen">
+    <param name="side" value="right"/>
+    <param name="io" value="ws"/>
+    <param name="rate" value="1"/>
+  </node>
+</launch>
