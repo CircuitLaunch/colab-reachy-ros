@@ -15,6 +15,7 @@ SHELL ["/bin/bash", "-c"]
 
 RUN mkdir -p /home/reachy/catkin_ws/src
 RUN cd /home/reachy/catkin_ws/src && git clone https://github.com/pollen-robotics/reachy_description
+RUN cd /home/reachy/catkin_ws/src/reachy_description && git checkout -b ros1 a51b576
 RUN cd /home/reachy/catkin_ws/src && git clone https://github.com/pollen-robotics/reachy_moveit_config
 RUN cd /home/reachy/catkin_ws && source /opt/ros/noetic/setup.bash && /opt/ros/noetic/bin/catkin_make
 
