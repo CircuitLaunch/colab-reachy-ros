@@ -1,13 +1,16 @@
 <launch>
+  <!-- Select simulator or physical robot -->
+  <arg name="simulator" default="true" />
+
   <node name="right_arm_controller" pkg="colab_reachy_ros" type="reachy_arm_controller.py" respawn="true" output="screen">
-    <param name="side" value="right"/>
-    <param name="io" value="ws"/>
-    <param name="rate" value="100"/>
+    <param name="side" value="right" />
+    <param name="io" value="$(eval 'ws' if arg('simulator') else '/dev/ttyUSB*')" />
+    <param name="rate" value="100" />
 
     <!-- If true, allows trajectories with non-zero speed and acceleration at start and end, so that they can be joined in a smooth overall trajectory -->
-    <param name="arm_continuous_trajectories" value="False"/>
+    <param name="arm_continuous_trajectories" value="False" />
 
     <!-- Amount of time (s) permitted to be late achieving goal -->
-    <param name="arm_goal_delay_tolerance" value="0.1"/>
+    <param name="arm_goal_delay_tolerance" value="0.1" />
   </node>
 </launch>
