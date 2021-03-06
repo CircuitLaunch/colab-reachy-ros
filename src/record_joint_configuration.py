@@ -18,8 +18,6 @@ try:
     load_joint_configurations_from_file(move_group)
 except FileNotFoundError:  # No file yet - create one
     pass
-except KeyError:  # No data for this move group yet
-    pass
 
 # get_named_targets() gets hardcoded targets from the config (i.e. left_rest) but not remembered ones
 if overwrite or pose_name not in move_group.get_remembered_joint_values().keys():

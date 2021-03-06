@@ -6,8 +6,13 @@ from pathlib import Path
 from typing import List, Dict
 
 
-POSE_FILE = Path(__file__).parents[2].absolute() / "config" / "moveit_joint_configurations.json"
-POSE_TEMPFILE = POSE_FILE.with_suffix(POSE_FILE.suffix + ".tmp")
+POSE_FILE_DIR = Path(__file__).parents[2].absolute() / "config" / "moveit_joint_configurations"
+
+
+def pose_file_paths(commander: moveit_commander.MoveGroupCommander):
+    pose_file = POSE_FILE_DIR / f"{commander.get_name()}.json"
+    temp_file = pose_file.with_suffix(pose_file.suffix + ".tmp")
+    return (pose_file, temp_file)
 
 
 def load_joint_configurations(
@@ -28,8 +33,8 @@ def load_joint_configurations_from_file(commander: moveit_commander.MoveGroupCom
     load the commander with the configurations for its move group name.
     """
 
-    joint_configurations = json.loads(POSE_FILE.read_text())
-    load_joint_configurations(commander, joint_configurations[commander.get_name()])
+    pose_file, temp_file = pose_file_paths(commander)
+    load_joint_configurations(commander, json.loads(pose_file.read_text()))
 
 
 def save_joint_configurations_to_file(commander: moveit_commander.MoveGroupCommander):
@@ -38,11 +43,10 @@ def save_joint_configurations_to_file(commander: moveit_commander.MoveGroupComma
     If the file already exists, it is overwritten.
     All joint configurations for this move group not loaded into the MoveGroupCommander will be overwritten and lost.
     """
-    try:
-        joint_configurations = json.loads(POSE_FILE.read_text())
-    except FileNotFoundError:
-        joint_configurations = {}
 
-    joint_configurations[commander.get_name()] = commander.get_remembered_joint_values()
-    POSE_TEMPFILE.write_text(json.dumps(joint_configurations, indent=4, sort_keys=True))
-    POSE_TEMPFILE.rename(POSE_FILE)
+    POSE_FILE_DIR.mkdir(parents=True, exist_ok=True)
+
+    pose_file, temp_file = pose_file_paths(commander)
+
+    temp_file.write_text(json.dumps(commander.get_remembered_joint_values(), indent=4, sort_keys=True))
+    temp_file.rename(pose_file)
