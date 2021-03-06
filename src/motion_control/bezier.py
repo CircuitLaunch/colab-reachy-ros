@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#!/usr/bin/env python3
 
 # Copied from https://github.com/poppy-project/poppy_controllers/blob/master/src/poppy_ros_control/bezier.py
 # Software License Agreement (BSD License)

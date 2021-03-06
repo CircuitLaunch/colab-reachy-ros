@@ -38,7 +38,7 @@ from copy import deepcopy
 import operator
 import numpy as np
 import reachy
-import reachy_arm_control.bezier as bezier
+import motion_control.bezier as bezier
 from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectoryPoint
 from control_msgs.msg import (

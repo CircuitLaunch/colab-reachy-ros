@@ -164,7 +164,7 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   src/reachy_arm_controller.py
-  src/reachy_head.py
+  src/record_joint_configuration.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
