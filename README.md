@@ -34,7 +34,6 @@ The development container holds the following ports for the following reasons:
 * Port 6171: Used to connect a Python `Reachy` object to [Pollen's online Reachy simulator](http://playground.pollen-robotics.com).
 
 #### Using simulator
-- Open in your browser, and click connect once the unitiy window loads: https://playground.pollen-robotics.com/
-- Open launch/test.launch and set the argument "simulator" to "true"
-- Run "colab_reachy_ros test.launch
-- Open a new terminal to use the arm compliant mode service, and enter "rosservice call right_arm_controller/set_arm_compliant False"
+- Open in your browser, and click connect once the unity window loads: https://playground.pollen-robotics.com/
+- Run `roslaunch colab_reachy_ros moveit_demo.launch simulator:=true`
+- Open a new terminal to use the arm compliant mode service, and enter `rosservice call /right_arm_controller/set_arm_compliant False`

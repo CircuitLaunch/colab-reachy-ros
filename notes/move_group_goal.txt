@@ -1,0 +1,197 @@
+parallels@parallels-Parallels-Virtual-Platform:~/catkin_ws/src/colab_reachy_ros$ rostopic echo /move_group/goal
+header: 
+  seq: 0
+  stamp: 
+    secs: 1615241950
+    nsecs: 248707494
+  frame_id: ''
+goal_id: 
+  stamp: 
+    secs: 1615241950
+    nsecs: 248716124
+  id: "/rviz_parallels_Parallels_Virtual_Platform_1351089_964883941916353100-1-1615241950.248716124"
+goal: 
+  request: 
+    workspace_parameters: 
+      header: 
+        seq: 0
+        stamp: 
+          secs: 1615241950
+          nsecs: 239590987
+        frame_id: "pedestal"
+      min_corner: 
+        x: -1.0
+        y: -1.0
+        z: -1.0
+      max_corner: 
+        x: 1.0
+        y: 1.0
+        z: 1.0
+    start_state: 
+      joint_state: 
+        header: 
+          seq: 0
+          stamp: 
+            secs: 0
+            nsecs:         0
+          frame_id: ''
+        name: []
+        position: []
+        velocity: []
+        effort: []
+      multi_dof_joint_state: 
+        header: 
+          seq: 0
+          stamp: 
+            secs: 0
+            nsecs:         0
+          frame_id: ''
+        joint_names: []
+        transforms: []
+        twist: []
+        wrench: []
+      attached_collision_objects: []
+      is_diff: True
+    goal_constraints: 
+      - 
+        name: ''
+        joint_constraints: 
+          - 
+            joint_name: "l_shoulder_pitch"
+            position: 0.7267790164855404
+            tolerance_above: 0.0001
+            tolerance_below: 0.0001
+            weight: 1.0
+          - 
+            joint_name: "l_shoulder_roll"
+            position: -0.12889963981704156
+            tolerance_above: 0.0001
+            tolerance_below: 0.0001
+            weight: 1.0
+          - 
+            joint_name: "l_arm_yaw"
+            position: 0.6108647050291227
+            tolerance_above: 0.0001
+            tolerance_below: 0.0001
+            weight: 1.0
+          - 
+            joint_name: "l_elbow_pitch"
+            position: -1.562133084965401
+            tolerance_above: 0.0001
+            tolerance_below: 0.0001
+            weight: 1.0
+          - 
+            joint_name: "l_forearm_yaw"
+            position: -0.6442272749050991
+            tolerance_above: 0.0001
+            tolerance_below: 0.0001
+            weight: 1.0
+          - 
+            joint_name: "l_wrist_pitch"
+            position: 0.5913080705645035
+            tolerance_above: 0.0001
+            tolerance_below: 0.0001
+            weight: 1.0
+          - 
+            joint_name: "l_wrist_roll"
+            position: -0.7529304488592736
+            tolerance_above: 0.0001
+            tolerance_below: 0.0001
+            weight: 1.0
+        position_constraints: []
+        orientation_constraints: []
+        visibility_constraints: []
+    path_constraints: 
+      name: ''
+      joint_constraints: []
+      position_constraints: []
+      orientation_constraints: []
+      visibility_constraints: []
+    trajectory_constraints: 
+      constraints: []
+    reference_trajectories: []
+    planner_id: "RRTConnect"
+    group_name: "left_arm"
+    num_planning_attempts: 10
+    allowed_planning_time: 5.0
+    max_velocity_scaling_factor: 0.1
+    max_acceleration_scaling_factor: 0.1
+    cartesian_speed_end_effector_link: ''
+    max_cartesian_speed: 0.0
+  planning_options: 
+    planning_scene_diff: 
+      name: ''
+      robot_state: 
+        joint_state: 
+          header: 
+            seq: 0
+            stamp: 
+              secs: 0
+              nsecs:         0
+            frame_id: ''
+          name: []
+          position: []
+          velocity: []
+          effort: []
+        multi_dof_joint_state: 
+          header: 
+            seq: 0
+            stamp: 
+              secs: 0
+              nsecs:         0
+            frame_id: ''
+          joint_names: []
+          transforms: []
+          twist: []
+          wrench: []
+        attached_collision_objects: []
+        is_diff: True
+      robot_model_name: ''
+      fixed_frame_transforms: []
+      allowed_collision_matrix: 
+        entry_names: []
+        entry_values: []
+        default_entry_names: []
+        default_entry_values: []
+      link_padding: []
+      link_scale: []
+      object_colors: []
+      world: 
+        collision_objects: []
+        octomap: 
+          header: 
+            seq: 0
+            stamp: 
+              secs: 0
+              nsecs:         0
+            frame_id: ''
+          origin: 
+            position: 
+              x: 0.0
+              y: 0.0
+              z: 0.0
+            orientation: 
+              x: 0.0
+              y: 0.0
+              z: 0.0
+              w: 0.0
+          octomap: 
+            header: 
+              seq: 0
+              stamp: 
+                secs: 0
+                nsecs:         0
+              frame_id: ''
+            binary: False
+            id: ''
+            resolution: 0.0
+            data: []
+      is_diff: True
+    plan_only: False
+    look_around: False
+    look_around_attempts: 0
+    max_safe_execution_cost: 0.0
+    replan: False
+    replan_attempts: 0
+    replan_delay: 2.0
+---
