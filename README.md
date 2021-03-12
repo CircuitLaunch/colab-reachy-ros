@@ -6,11 +6,11 @@ This directory is a ROS package. If you want to use it in your own ROS environme
 ### Native setup
 
 - You must install ros noetic using the standard wiki procedure
-- Then install moveit with "sudo apt-get install -y ros-noetic-moveit"
+- Then install other needed ROS packages with "sudo apt-get install -y ros-noetic-moveit ros-noetic-cv-camera"
 - Then build your catikn_ws
 - Navigate to the src folder in your catkin_ws, you'll need to clone three repos there:
 - git clone https://github.com/pollen-robotics/reachy_description
-- cd reachy_descrpition
+- cd reachy_description
 - git checkout -b ros1 a51b576
 - cd ..
 - git clone https://github.com/pollen-robotics/reachy_moveit_config
