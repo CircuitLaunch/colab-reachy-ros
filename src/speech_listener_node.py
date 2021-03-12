@@ -42,8 +42,8 @@ class ListenerNode:
 if __name__ == "__main__":
     # add here the node name. In ROS, nodes are unique named.
     rospy.init_node("speech_listener_node")
-    device_index = rospy.get_param("~device_index")
-    listen_frequency = rospy.get_param("~rate")
+    device_index = rospy.get_param("~device_index", default=None)
+    listen_frequency = rospy.get_param("~rate", default=10)
 
     listener = ListenerNode(rospy.get_name(), device_index, listen_frequency)
 
