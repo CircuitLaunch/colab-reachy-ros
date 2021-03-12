@@ -1,5 +1,6 @@
 wheel
 reachy==1.3.2
 numpy
+SpeechRecognition
 flake8
 black
