@@ -2,13 +2,13 @@
 
 import rospy
 import speech_recognition as sr
+from typing import Optional
 from std_msgs.msg import String
 
 
 class ListenerNode:
-    def __init__(self, name: str, index: int, frequency: float):
+    def __init__(self, name: str, index: Optional[int], frequency: float):
         self._device_index = rospy.get_param
-        self._source = sr.Microphone(device_index=index)
         self._recognizer = sr.Recognizer()
 
         self._publisher = rospy.Publisher(name + "/microphone_speech", String, queue_size=10)
@@ -17,26 +17,27 @@ class ListenerNode:
     def spin(self):
         rospy.loginfo("Listening...")
 
-        while not rospy.is_shutdown():
-            # Obtain audio from microphone
-            audio = self._recognizer.listen(self._source)
-            listened = None
+        with sr.Microphone(device_index=self._device_index) as source:
+            while not rospy.is_shutdown():
+                # Obtain audio from microphone
+                audio = self._recognizer.listen(source)
+                listened = None
 
-            # Recognize speech using Sphinx
-            try:
-                listened = self._recognizer.recognize_google(audio)
-                rospy.logdebug(f'Heard: "{listened}"')
-            except sr.UnknownValueError:
-                rospy.logerr("Could not understand audio")
-            except sr.RequestError as e:
-                rospy.logerr(f"Recognizer RequestError: {e}")
-            except sr.WaitTimeoutError:
-                rospy.logdebug("No audio heard")
+                # Recognize speech using Sphinx
+                try:
+                    listened = self._recognizer.recognize_google(audio)
+                    rospy.logdebug(f'Heard: "{listened}"')
+                except sr.UnknownValueError:
+                    rospy.logerr("Could not understand audio")
+                except sr.RequestError as e:
+                    rospy.logerr(f"Recognizer RequestError: {e}")
+                except sr.WaitTimeoutError:
+                    rospy.logdebug("No audio heard")
 
-            if listened:
-                self._publisher.publish(listened)
+                if listened:
+                    self._publisher.publish(listened)
 
-            self._rate.sleep()
+                self._rate.sleep()
 
 
 if __name__ == "__main__":
