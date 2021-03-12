@@ -8,7 +8,7 @@ from std_msgs.msg import String
 
 class ListenerNode:
     def __init__(self, name: str, index: Optional[int], frequency: float):
-        self._device_index = rospy.get_param
+        self._device_index = index
         self._recognizer = sr.Recognizer()
 
         self._publisher = rospy.Publisher(name + "/microphone_speech", String, queue_size=10)
