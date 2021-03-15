@@ -15,34 +15,35 @@ class ListenerNode:
         self._rate = rospy.Rate(frequency)
 
     def spin(self):
-        rospy.loginfo("Listening...")
-
         with sr.Microphone(device_index=self._device_index) as source:
+            rospy.loginfo("Listening...")
+
             while not rospy.is_shutdown():
                 # Obtain audio from microphone
-                audio = self._recognizer.listen(source)
-                listened = None
-
-                # Recognize speech using Sphinx
                 try:
-                    listened = self._recognizer.recognize_google(audio)
-                    rospy.logdebug(f'Heard: "{listened}"')
-                except sr.UnknownValueError:
-                    rospy.logerr("Could not understand audio")
-                except sr.RequestError as e:
-                    rospy.logerr(f"Recognizer RequestError: {e}")
+                    audio = self._recognizer.listen(source, timeout=3)  # TODO: make the tiemout a ROS param?
                 except sr.WaitTimeoutError:
-                    rospy.logdebug("No audio heard")
-
-                if listened:
-                    self._publisher.publish(listened)
+                    rospy.logwarn("No audio heard within timeout")
+                else:
+                    # Recognize speech using Google Web Speech API
+                    try:
+                        listened = self._recognizer.recognize_google(audio)
+                    except sr.UnknownValueError:
+                        rospy.logerr("Could not understand audio")
+                    except sr.RequestError as e:
+                        rospy.logerr(f"Recognizer RequestError: {e}")
+                    except sr.WaitTimeoutError:
+                        rospy.logdebug("No audio heard")
+                    else:
+                        rospy.logdebug(f'Heard: "{listened}"')
+                        self._publisher.publish(listened)
 
                 self._rate.sleep()
 
 
 if __name__ == "__main__":
     # add here the node name. In ROS, nodes are unique named.
-    rospy.init_node("speech_listener_node")
+    rospy.init_node("speech_listener", log_level=rospy.DEBUG)
     device_index = rospy.get_param("~device_index", default=None)
     listen_frequency = rospy.get_param("~rate", default=10)
 
