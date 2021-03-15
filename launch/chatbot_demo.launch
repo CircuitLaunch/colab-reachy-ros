@@ -1,0 +1,6 @@
+<launch>
+  <node name="speech_listener" pkg="colab_reachy_ros" type="speech_listener.py" respawn="true" output="screen">
+    <!-- Device Index 5 is the index of the ReSpeaker 4 on Reachy -->
+    <param name="device_index" value="5" />
+  </node>
+</launch>
