@@ -165,7 +165,7 @@ include_directories(
 catkin_install_python(PROGRAMS
   src/reachy_arm_controller.py
   src/record_joint_configuration.py
-  src/speech_listener_node.py
+  src/speech_listener.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
