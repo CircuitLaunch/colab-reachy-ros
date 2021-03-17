@@ -1,0 +1,12 @@
+import rospy
+import sys
+import rospy
+import moveit_commander
+from motion_control.moveit_helpers import load_joint_configurations_from_file
+from std_msgs.msg import String
+
+if __name__ == '__main__':
+    moveit_commander.roscpp_initialize(sys.argv)
+    rospy.init_node("Movitnode")
+    move_group = moveit_commander.MoveGroupCommander("left_arm")
+    load_joint_configurations_from_file("move_group")
