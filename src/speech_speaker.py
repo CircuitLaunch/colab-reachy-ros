@@ -8,17 +8,14 @@ from std_msgs.msg import String
 from playsound import playsound
 
 
-count = 0
 
 def speak_callback(msg):
-    global count
     language = 'en-us'
-    speech = gTTS( text = msg.data, lang = language, slow = False)
-    filename = f'speech{count%2}.mp3'
+    speech = gTTS(text = msg.data, lang=language, slow=False)
+    filename = 'speech1.mp3'
     speech.save(filename)
     playsound(filename)
     os.remove(filename)
-    count +=1
     rospy.loginfo("Speaked: %s", msg.data)
 
 def main():
@@ -39,4 +36,3 @@ if __name__=='__main__':
             os._exit(0)
 
     #Add here the name of the ROS. In ROS, names are unique named.
-       
