@@ -122,6 +122,8 @@ class ReachyArmNode:
         ]
         self._dxl_motors = dict(zip(self._ros_motor_names, dxl_list))
 
+        rospy.logwarn(f"Dynamixels are {self._dxl_motors}")
+
         self._joint_state_publisher = rospy.Publisher(f"{self._name}/joint_states", JointState, queue_size=10)
         self._joint_temp_publisher = rospy.Publisher(
             f"{self._name}/joint_temperatures", JointTemperatures, queue_size=10
@@ -172,6 +174,7 @@ class ReachyArmNode:
     def shutdown_hook(self):
         for m in self._dxl_motors.values():
             m.compliant = True
+        rospy.sleep(0.2)
 
     def _set_arm_compliance(self, request: SetBool):
         self._arm_compliant = request.data
