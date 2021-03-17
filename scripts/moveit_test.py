@@ -3,7 +3,7 @@ import sys
 import moveit_commander
 from motion_control.moveit_helpers import load_joint_configurations_from_file
 
-TARGET_POSE = "pose_1"
+TARGET_POSE = "waivehello2"
 
 if __name__ == '__main__':
     moveit_commander.roscpp_initialize(sys.argv)
