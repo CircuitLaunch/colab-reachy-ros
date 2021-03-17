@@ -1,11 +1,10 @@
+#!usr/bin/env python3
+
 #The Keyword finder & chatbot ROS node
 
-#!usr/bin/env python
-
-
 import rospy
-
-import speech_recognition as srfrom chatterbot import ChatBot
+import speech_recognition as sr
+from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer, ListTrainer
 
 
@@ -21,10 +20,10 @@ chatbot = ChatBot(name='Reachy',read_only = True, logic_adapters=[ {
         ], trainer='chatterbot.trainers.ChatterBotCorpusTrainer')
 
 # Create a new trainer for the chatbot
-trainer = ChatterBotCorpusTrainer(chatbot)
+#trainer = ChatterBotCorpusTrainer(chatbot)
 
 # Train the chatbot based on the english corpus
-trainer.train("chatterbot.corpus.english")
+#trainer.train("chatterbot.corpus.english")
 
 # Train the chatbot based on lists
 
@@ -56,12 +55,12 @@ specific = ['i want to go to bathroom',
 list_trainer = ListTrainer(chatbot)
 
 for item in (small_talk, specific):
-    list_trainer.train(item)
+   list_trainer.train(item)
 
 
 
 def request_analyzer_callback(msg):
-   key_words = ['kitchen',
+    key_words = ['kitchen',
             'bathroom',
             'call'] 
     
@@ -73,20 +72,21 @@ def request_analyzer_callback(msg):
             command = word
             rospy.loginfo("Keyword \""+ command +"\" detected.")
             pub_1.publish(command)
-        else:
-            response = chatbot.getchatbot.get_response(request)
-            rospy.loginfo("Chatbot generated response" + response.text ) 
-            pub_2.publish(response.text)
+            return
+
+    response = chatbot.get_response(request)
+    rospy.loginfo("Chatbot generated response" + response.text ) 
+    pub_2.publish(response.text)
             
 
 if __name__=='__main__':
     #add here the node name. In ROS, nodes are unique named.
     rospy.init_node("keyword_chatbot_node")
     
-    pub_1 = rospy.Publisher(rospy.get_name()+'/voice_command', String, queue_size=10)
-    pub_2 = rospy.Publisher(rospy.get_name()+'/speak', String, queue_size=10)
+    pub_1 = rospy.Publisher('voice_command', String, queue_size=10)
+    pub_2 = rospy.Publisher('speak', String, queue_size=10)
     
-    sub=rospy.Subscriber('microphone_speech', String, request_analyzer_callback)
+    sub=rospy.Subscriber('speech_listener/microphone_speech', String, request_analyzer_callback)
     rospy.spin()
     
    

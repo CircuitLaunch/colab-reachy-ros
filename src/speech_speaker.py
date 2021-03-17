@@ -1,5 +1,6 @@
-#!usr/bin/env python
+#!usr/bin/env python3
 
+import os
 import rospy
 from gtts import gTTS
 from typing import Optional
@@ -7,20 +8,18 @@ from std_msgs.msg import String
 from playsound import playsound
 
 
-    
+count = 0
 
 def speak_callback(msg):
     global count
     language = 'en-us'
-    speech = gTTS(text = text, lang = language, slow = False)
+    speech = gTTS( text = msg.data, lang = language, slow = False)
     filename = f'speech{count%2}.mp3'
     speech.save(filename)
     playsound(filename)
     os.remove(filename)
     count +=1
     rospy.loginfo("Speaked: %s", msg.data)
-
-
 
 def main():
     rospy.init_node('speaker_node')

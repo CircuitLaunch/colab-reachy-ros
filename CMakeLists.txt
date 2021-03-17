@@ -166,6 +166,8 @@ catkin_install_python(PROGRAMS
   src/reachy_arm_controller.py
   src/record_joint_configuration.py
   src/speech_listener.py
+  src/keyword_chatbot_node.py
+  src/speech_speaker.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
