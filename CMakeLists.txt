@@ -166,7 +166,7 @@ catkin_install_python(PROGRAMS
   src/reachy_arm_controller.py
   src/face_and_mask_detector.py
   scripts/record_joint_configuration.py
-  scripts/moveit_test.py
+  scripts/goto_joint_configuration.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
