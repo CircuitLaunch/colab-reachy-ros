@@ -1,7 +1,8 @@
 <launch>
   <node name="keyword_chatbot_node" pkg="colab_reachy_ros" type="keyword_chatbot_node.py" respawn="true" output="screen">
-    <!-- Device Index 5 is the index of the ReSpeaker 4 on Reachy -->
-    <!-- <param name="device_index" value="5" /> -->
+    <!-- Device name - uses the default microphone if no name is provided -->
+    <!-- Searches for a substring match, and uses the first found. Fails with exception if named microphone does not exist -->
+    <param name="device_name" value="ReSpeaker" />
   </node>
 
   <node name="speech_listener" pkg="colab_reachy_ros" type="speech_listener.py" respawn="true" output="screen">
