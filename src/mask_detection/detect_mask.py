@@ -57,7 +57,7 @@ class MaskDetector:
 
         self._mask_net = load_model(str(mask_model.resolve()))
 
-    def detect_and_predict_mask(self, frame, face_confidence: float = 0.5):
+    def detect_and_predict_mask(self, frame: np.ndarray, face_confidence: float = 0.5):
         """
         frame: cv2 image frame
         faceNet: face detector model
@@ -66,6 +66,8 @@ class MaskDetector:
 
         Returns a list of pairs of form (probability of mask, probability of no mask)
         """
+
+        print(f"Frame dimensions: {frame.shape}")
 
         # grab the dimensions of the frame and then construct a blob
         # from it
