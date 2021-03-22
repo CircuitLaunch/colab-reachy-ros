@@ -23,6 +23,7 @@ class MaskDetectorNode:
         self._subscriber = rospy.Subscriber(f"{self._source}/raw_image", Image, self._callback)
 
     def _callback(self, data: Image):
+        rospy.logdebug("Received image")
         try:
             cv_image = self._bridge.imgmsg_to_cv2(data)
             locs, preds = self._detector.detect_and_predict_mask(cv_image, "bgr8")
