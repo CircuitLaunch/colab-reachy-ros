@@ -110,6 +110,7 @@ class MaskDetector:
                 locs.append((startX, startY, endX, endY))
 
         # only make a predictions if at least one face was detected
+        print(faces)
         if len(faces) > 0:
             preds = [self._mask_net.predict([face])[0] for face in faces]
         # return a 2-tuple of the face locations and their corresponding
