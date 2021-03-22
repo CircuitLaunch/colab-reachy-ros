@@ -29,6 +29,7 @@ To set up the Docker development container using VSCode, simply install the Remo
 To build the container yourself, enter the .devcontainer directory in your terminal and run the command `docker-compose up` to create and start the container.
 
 #### Docker Ports
+
 The development container holds the following ports for the following reasons:
 
 * Port 6171: Used to connect a Python `Reachy` object to [Pollen's online Reachy simulator](http://playground.pollen-robotics.com).
@@ -37,3 +38,53 @@ The development container holds the following ports for the following reasons:
 - Open in your browser, and click connect once the unity window loads: https://playground.pollen-robotics.com/
 - Run `roslaunch colab_reachy_ros moveit_demo.launch simulator:=true`
 - Open a new terminal to use the arm compliant mode service, and enter `rosservice call /right_arm_controller/set_arm_compliant False`
+
+
+# Node Descriptions
+
+## NAME
+### Screenshot
+<!--<img src="assets/screnshot.png" width="400">-->
+#### Description
+```text
+blah blah blah
+```
+##### <DESCRIPTION> 
+#### Commandline Example
+```bash
+echo foo
+```
+#### Hardware Requirments
+- foo
+- bar 
+##### <DESCRIPTION>
+#### Message Format
+#### [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
+```cpp
+  
+float64[] positions
+float64[] velocities
+float64[] accelerations
+float64[] effort
+duration time_from_start
+```
+#### Required Packages (python)
+##### <DESCRIPTION>
+```text
+requests==3.5.2
+```
+#### Ros packages Instilation (apt-get install)
+##### <DESCRIPTION>
+```bash
+ls -hal
+```
+#### Topics/Services/Actions Defintion 
+##### [REQUIRED/NOREQUIRED] <DESCRIPTION>
+```bash
+/EXAMPLE_TOPIC : Int16
+```
+### Ros parameters
+```bash
+```
+#### Notes
+#####
