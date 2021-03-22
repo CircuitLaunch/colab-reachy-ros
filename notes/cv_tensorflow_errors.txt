@@ -1,10 +1,10 @@
-ubuntu@nuc:~/catkin_ws$ roslaunch colab_reachy_ros test_mask_detection.launch 
-... logging to /home/ubuntu/.ros/log/16f119d8-8764-11eb-a277-c1015349054c/roslaunch-nuc-105432.log
+ubuntu@nuc:~$ roslaunch colab_reachy_ros test_mask_detection.launch 
+... logging to /home/ubuntu/.ros/log/dac0a698-8b52-11eb-8483-cb01945a3fc5/roslaunch-nuc-12844.log
 Checking log directory for disk usage. This may take a while.
 Press Ctrl-C to interrupt
 Done checking log file disk usage. Usage is <1GB.
 
-started roslaunch server http://nuc:40317/
+started roslaunch server http://nuc:33719/
 
 SUMMARY
 ========
@@ -14,7 +14,6 @@ PARAMETERS
  * /mask_detector/mask_model: /home/ubuntu/catk...
  * /mask_detector/source: right_camera
  * /right_camera/device_id: 0
- * /right_camera/image_width: 400
  * /rosdistro: noetic
  * /rosversion: 1.15.9
 
@@ -24,40 +23,35 @@ NODES
     right_camera (cv_camera/cv_camera_node)
 
 auto-starting new master
-process[master]: started with pid [105440]
+process[master]: started with pid [12855]
 ROS_MASTER_URI=http://localhost:11311
 
-setting /run_id to 16f119d8-8764-11eb-a277-c1015349054c
-process[rosout-1]: started with pid [105450]
+setting /run_id to dac0a698-8b52-11eb-8483-cb01945a3fc5
+process[rosout-1]: started with pid [12865]
 started core service [/rosout]
-process[right_camera-2]: started with pid [105457]
-process[mask_detector-3]: started with pid [105458]
-2021-03-17 14:02:33.701824: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /home/ubuntu/catkin_ws/devel/lib:/opt/ros/noetic/lib:/opt/ros/noetic/lib/x86_64-linux-gnu
-2021-03-17 14:02:33.701856: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+process[right_camera-2]: started with pid [12868]
+process[mask_detector-3]: started with pid [12869]
+2021-03-22 14:09:16.274573: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /home/ubuntu/catkin_ws/devel/lib:/opt/ros/noetic/lib:/opt/ros/noetic/lib/x86_64-linux-gnu
+2021-03-22 14:09:16.274662: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+[DEBUG] [1616447358.864372]: init_node, name[/mask_detector], pid[12869]
+[DEBUG] [1616447358.865580]: binding to 0.0.0.0 0
+[DEBUG] [1616447358.867047]: bound to 0.0.0.0 33933
+[DEBUG] [1616447358.868432]: ... service URL is rosrpc://nuc:33933
+[DEBUG] [1616447358.869532]: [/mask_detector/get_loggers]: new Service instance
+[DEBUG] [1616447358.871382]: ... service URL is rosrpc://nuc:33933
+[DEBUG] [1616447358.872416]: [/mask_detector/set_logger_level]: new Service instance
 [ WARN:0] global ../modules/videoio/src/cap_gstreamer.cpp (935) open OpenCV | GStreamer warning: Cannot query video position: status=0, value=-1, duration=-1
-[ WARN:0] global ../modules/videoio/src/cap_gstreamer.cpp (1758) handleMessage OpenCV | GStreamer warning: Embedded video playback halted; module v4l2src0 reported: Internal data stream error.
-[ WARN:0] global ../modules/videoio/src/cap_gstreamer.cpp (515) startPipeline OpenCV | GStreamer warning: unable to start pipeline
-[ WARN] [1616014954.607129684]: fail to set image_width
-[DEBUG] [1616014955.532069]: init_node, name[/mask_detector], pid[105458]
-[DEBUG] [1616014955.533478]: binding to 0.0.0.0 0
-[DEBUG] [1616014955.534888]: bound to 0.0.0.0 33023
-[DEBUG] [1616014955.536839]: ... service URL is rosrpc://nuc:33023
-[DEBUG] [1616014955.538649]: [/mask_detector/get_loggers]: new Service instance
-[DEBUG] [1616014955.541588]: ... service URL is rosrpc://nuc:33023
-[DEBUG] [1616014955.543651]: [/mask_detector/set_logger_level]: new Service instance
-2021-03-17 14:02:35.829355: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
-2021-03-17 14:02:35.829578: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /home/ubuntu/catkin_ws/devel/lib:/opt/ros/noetic/lib:/opt/ros/noetic/lib/x86_64-linux-gnu
-2021-03-17 14:02:35.829597: W tensorflow/stream_executor/cuda/cuda_driver.cc:326] failed call to cuInit: UNKNOWN ERROR (303)
-2021-03-17 14:02:35.829618: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (nuc): /proc/driver/nvidia/version does not exist
-2021-03-17 14:02:35.829834: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+[ WARN] [1616447359.139238728]: Camera calibration file /home/ubuntu/.ros/camera_info/camera.yaml not found.
+2021-03-22 14:09:19.170569: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-03-22 14:09:19.171903: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /home/ubuntu/catkin_ws/devel/lib:/opt/ros/noetic/lib:/opt/ros/noetic/lib/x86_64-linux-gnu
+2021-03-22 14:09:19.171932: W tensorflow/stream_executor/cuda/cuda_driver.cc:326] failed call to cuInit: UNKNOWN ERROR (303)
+2021-03-22 14:09:19.171955: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (nuc): /proc/driver/nvidia/version does not exist
+2021-03-22 14:09:19.172204: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
 To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2021-03-17 14:02:35.830034: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
-/home/ubuntu/catkin_ws/src/colab_reachy_ros/src/face_and_mask_detector.py:22: SyntaxWarning: The publisher should be created with an explicit keyword argument 'queue_size'. Please see http://wiki.ros.org/rospy/Overview/Publishers%20and%20Subscribers for more information.
-  self._debug_publisher = rospy.Publisher(f"{self._name}/debug_image", Image)
-[DEBUG] [1616014957.161682]: node[/mask_detector, http://nuc:35393/] entering spin(), pid[105458]
+2021-03-22 14:09:19.172445: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+[DEBUG] [1616447360.229680]: node[/mask_detector, http://nuc:38539/] entering spin(), pid[12869]
 ^C[mask_detector-3] killing on exit
 [right_camera-2] killing on exit
-[ WARN:0] global ../modules/videoio/src/cap_gstreamer.cpp (480) isPipelinePlaying OpenCV | GStreamer warning: GStreamer: pipeline have not been created
 [rosout-1] killing on exit
 [master] killing on exit
 shutting down processing monitor...
