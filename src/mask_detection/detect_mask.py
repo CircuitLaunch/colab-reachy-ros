@@ -116,8 +116,8 @@ class MaskDetector:
                 locs.append((startX, startY, endX, endY))
 
         # only make a predictions if at least one face was detected
-        print(f"Face 0 dimensions: {faces[0].shape}")
         if len(faces) > 0:
+            print(f"Face 0 dimensions: {faces[0].shape}")
             for face in faces:
                 face_array = np.array([face], dtype="float32")
                 print(f"Face array dimensions after construction: {face_array.shape}")
