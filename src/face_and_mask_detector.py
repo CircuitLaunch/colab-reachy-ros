@@ -30,7 +30,7 @@ class MaskDetectorNode:
             self._debug_publisher.publish(self._bridge.cv2_to_imgmsg(debug_image, "bgr8"))
             rospy.logdebug(f"Predictions: {preds}")
         except Exception as e:
-            rospy.logerr(f"Error processing image: {e}")
+            rospy.logerr(f"Error processing image: {e}", exc_info=True)
 
 
 if __name__ == '__main__':
