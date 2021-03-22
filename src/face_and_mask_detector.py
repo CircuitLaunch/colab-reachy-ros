@@ -20,7 +20,7 @@ class MaskDetectorNode:
 
         # self._detection_publisher = rospy.Publisher(f"{self._name}/faces_detected", )
         self._debug_publisher = rospy.Publisher(f"{self._name}/debug_image", Image, queue_size=1)
-        self._subscriber = rospy.Subscriber(f"{self._source}/raw_image", Image, self._callback)
+        self._subscriber = rospy.Subscriber(f"{self._source}/image_raw", Image, self._callback)
 
     def _callback(self, data: Image):
         rospy.logdebug("Received image")
