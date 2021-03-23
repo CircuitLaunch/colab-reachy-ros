@@ -29,6 +29,98 @@ This directory is a ROS package. If you want to use it in your own ROS environme
 
 # Node Descriptions
 
+-----------------------
+## Head Node
+### Screenshot
+<img src="https://i.imgur.com/QWHPGBd.jpg" width="400">
+<img src="https://i.imgur.com/Ru0sPze.png" width="400">
+
+#### Description
+```text
+this node controls the head of reachy its two servo motors which control the tilt and yaw of the head
+TODO: add control of reachy's 2x antenna's (ears)
+```
+
+#### Commandline Example
+##### this sends a animation for the head in this case its dummy data
+##### but could be conerted to something that shakes the head back and forth
+```bash
+rostopic pub /head/position_animator trajectory_msgs/JointTrajectory '{points:[{positions:[1.5,1.5]},{positions:[0.8,1.2]},{positions:[0.7,0.6]},{positions:[0.3,0.1]}]}'
+```
+#### Hardware Requirments
+- 2 hobby servo motors
+#### Message Format
+#### [trajectory_msgs/JointTrajectory Documentation](http://docs.ros.org/en/api/trajectory_msgs/html/msg/JointTrajectory.html)
+#### [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
+ 
+```python
+  
+Header header
+string[] joint_names
+JointTrajectoryPoint[] points <- im only using this one
+
+example of a JointTrajectoryPoint
+
+float64[] positions <- im only using this one
+float64[] velocities
+float64[] accelerations
+float64[] effort
+duration time_from_start
+
+example if it was in json format 
+{
+    points:
+        [
+            { positions: [1.5, 1.5] },
+            { positions: [0.8, 1.2] },
+            { positions: [0.7, 0.6] },
+            { positions: [0.3, 0.1] }
+        ]
+}
+```
+#### Required Packages (python)
+##### im not using any special packages besides the normal rospython client
+```text
+rospy==1.15.9
+```
+#### Ros packages Instilation (apt-get install)
+##### ros serial for noetic is required to communicat with the arduino over serial
+```bash
+sudo apt-get install ros-noetic-rosserial-arduino
+sudo apt-get install ros-noetic-rosserial
+```
+#### Topics Defintion 
+##### <DESCRIPTION>
+```bash
+---public topics---
+"/head/position_animator": JointTrajectory
+
+---private topics ---
+"/head/position_animator/debug_point": JointTrajectoryPoint used for debugging only
+"/head/neck_pan_goal": UInt16
+"/head/neck_tilt_goal": UInt16
+```
+#### Ros parameters
+##### file is located in launch/head.launch
+```bash
+value="/dev/ttyACM0"/ must be changed to reflect the arduino your using
+
+to find your arduino port run this command
+1) 
+ls /dev/ttyAMC*
+2) if that doesnt work try
+ls /dev/serial/by-id
+```
+
+
+
+
+
+
+
+-----------------------
+# EXAMPLE FORMAT
+-----------------------
 ## NAME
 ### Screenshot
 <!--<img src="assets/screnshot.png" width="400">-->
@@ -36,8 +128,8 @@ This directory is a ROS package. If you want to use it in your own ROS environme
 ```text
 blah blah blah
 ```
-##### <DESCRIPTION> 
 #### Commandline Example
+##### <DESCRIPTION> 
 ```bash
 echo foo
 ```
@@ -47,7 +139,7 @@ echo foo
 ##### <DESCRIPTION>
 #### Message Format
 #### [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
-```cpp
+```python
   
 float64[] positions
 float64[] velocities
@@ -66,12 +158,24 @@ requests==3.5.2
 ls -hal
 ```
 #### Topics/Services/Actions Defintion 
-##### [REQUIRED/NOREQUIRED] <DESCRIPTION>
+##### <DESCRIPTION>
 ```bash
 /EXAMPLE_TOPIC : Int16
 ```
-### Ros parameters
+#### Ros parameters
 ```bash
 ```
 #### Notes
 #####
+
+-----------------
+# Contributors
+
+[![](https://contrib.rocks/image?repo=CircuitLaunch/colab_reachy_ros)](https://github.com/CircuitLaunch/colab_reachy_ros/graphs/contributors)
+
+##### Made with [contributors-img](https://contrib.rocks).
+
+-----------------
+# License
+#### MIT © wisehackermonkey
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
