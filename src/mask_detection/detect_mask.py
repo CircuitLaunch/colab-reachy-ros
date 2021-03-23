@@ -117,6 +117,7 @@ class MaskDetector:
             #for face in faces:
             #    face_array = np.array([face], dtype="float32")
             #    preds.append(self._mask_net.predict(face_array)[0])
+            print(f"Preds type: {type(preds)}")
         # return a 2-tuple of the face locations and their corresponding
         # locations
         return (locs, preds)
