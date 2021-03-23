@@ -67,8 +67,6 @@ class MaskDetector:
         Returns a list of pairs of form (probability of mask, probability of no mask)
         """
 
-        print(f"Frame dimensions: {frame.shape}")
-
         # grab the dimensions of the frame and then construct a blob
         # from it
         (h, w) = frame.shape[:2]
@@ -99,28 +97,25 @@ class MaskDetector:
                 (startX, startY) = (max(0, startX), max(0, startY))
                 (endX, endY) = (min(w - 1, endX), min(h - 1, endY))
 
-                print(f"Face bounding box: startx: {startX}, starty: {startY}, endx: {endX}, endy: {endY}")
-
                 # extract the face ROI, convert it from BGR to RGB channel
                 # ordering, resize it to 224x224, and preprocess it
                 face = frame[startY:endY, startX:endX]
                 face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
                 face = cv2.resize(face, (224, 224))
-                print(f"Face type after resizing: {type(face)}")
                 face = img_to_array(face)
                 face = preprocess_input(face)
                 # add the face and bounding boxes to their respective
                 # lists
-                print(f"Face dimensions: {face.shape}")
                 faces.append(face)
                 locs.append((startX, startY, endX, endY))
 
         # only make a predictions if at least one face was detected
         if len(faces) > 0:
-            print(f"Face 0 dimensions: {faces[0].shape}")
+            #faces = np.array(faces, dtype="float32")
+            #print(f"Face array dimensions after construction: {face_array.shape}")
+            #preds = maskNet.predict(faces, batch_size=32)
             for face in faces:
                 face_array = np.array([face], dtype="float32")
-                print(f"Face array dimensions after construction: {face_array.shape}")
                 preds.append(self._mask_net.predict(face_array)[0])
         # return a 2-tuple of the face locations and their corresponding
         # locations
