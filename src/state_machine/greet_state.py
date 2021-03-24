@@ -8,8 +8,8 @@ class Greet(smach.State):
     def __init__(self):
         super().__init__(
             outcomes=["all_masks", "missing_mask", "nobody_here"],
-            input_keys=["num_faces", "num_masks"],
-            output_keys=["conversation_started", "num_faces", "num_masks"],
+            output_keys=["conversation_started"],
+            io_keys=["num_faces", "num_masks"]
         )
 
         self._mutex = threading.Lock()
@@ -27,11 +27,11 @@ class Greet(smach.State):
             self._detected_masks = data.masks
 
     def execute(self, userdata: smach.UserData):
-        with self._mutex:
-            userdata.conversation_started = True
+        userdata.conversation_started = True
 
-            raise NotImplementedError  # TODO: Speak, wave, gesture
+        raise NotImplementedError  # TODO: Speak, wave, gesture
 
+        with self._mutex:  # Lock to prevent detection variables from changing in this block
             if self._detected_faces is not None:
                 # New face detections, save and use these
                 userdata.num_faces = self._detected_faces
