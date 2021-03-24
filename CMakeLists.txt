@@ -167,6 +167,7 @@ catkin_install_python(PROGRAMS
   src/face_and_mask_detector.py
   scripts/record_joint_configuration.py
   scripts/goto_joint_configuration.py
+  scripts/head_motor_control.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

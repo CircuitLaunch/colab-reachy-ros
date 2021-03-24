@@ -1,0 +1,8 @@
+<launch>
+    <node name="position_animator_node" pkg="servo-mover-ros-node" type="scripts/servo_control.py" output="screen"></node>
+    <!-- setup for serial control of arduino using rosserial_python -->
+    <node name="serial_node"        pkg="rosserial_python"      type="serial_node.py">
+        <param name="port"              type="string"               value="/dev/ttyACM0"/>
+        <param name="baud"              type="int"                  value="57600"/>
+    </node>
+</launch>

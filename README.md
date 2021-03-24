@@ -26,7 +26,7 @@ This directory is a ROS package. If you want to use it in your own ROS environme
 - Run `roslaunch colab_reachy_ros moveit_demo.launch simulator:=true`
 - Open a new terminal to use the arm compliant mode service, and enter `rosservice call /right_arm_controller/set_arm_compliant False`
 
-
+-----------------------
 # Node Descriptions
 
 -----------------------
