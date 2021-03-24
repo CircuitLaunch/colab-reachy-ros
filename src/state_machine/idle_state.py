@@ -10,12 +10,12 @@ class Idle(smach.State):
 
         self._mutex = threading.Lock()
 
+        self._detected_faces = None
+        self._detected_masks = None
+
         self._face_mask_subscriber = rospy.Subscriber(
             "/mask_detector/faces_detected", FaceAndMaskDetections, self._face_mask_callback, queue_size=10
         )
-
-        self._detected_faces = None
-        self._detected_masks = None
 
     def _face_mask_callback(self, data: FaceAndMaskDetections):
         with self._mutex:
