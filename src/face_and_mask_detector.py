@@ -33,6 +33,14 @@ class MaskDetectorNode:
             rospy.logdebug(f"Predictions data type: {type(preds)}")
 
             # TODO: Some kind of averaging to handle fluctuations in detections, then publish
+            faces = len(preds)
+            masks = 0
+            for pred in preds:
+                if pred[0] >= 0.5:  # TODO: Better standards for confirming a face? Uncertainty threshold?
+                    masks += 1
+            
+
+            # TODO: This output fluctuates. What are reasonable standards for determining detections to publish?
         except Exception as e:
             rospy.logerr(f"Error processing image: {e}", exc_info=True)
 
