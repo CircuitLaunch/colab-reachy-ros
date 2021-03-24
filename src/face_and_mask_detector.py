@@ -30,6 +30,7 @@ class MaskDetectorNode:
             debug_image = generate_debug_frame(cv_image, locs, preds)
             self._debug_publisher.publish(self._bridge.cv2_to_imgmsg(debug_image, "bgr8"))
             rospy.logdebug(f"Predictions: {preds}")
+            rospy.logdebug(f"Predictions data type: {type(preds)}")
 
             # TODO: Some kind of averaging to handle fluctuations in detections, then publish
         except Exception as e:
