@@ -54,6 +54,7 @@ catkin_python_setup()
 add_message_files(
   FILES
   JointTemperatures.msg
+  FaceAndMaskDetections.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -165,6 +166,7 @@ include_directories(
 catkin_install_python(PROGRAMS
   src/reachy_arm_controller.py
   src/face_and_mask_detector.py
+  src/reachy_state_machine.py
   scripts/record_joint_configuration.py
   scripts/goto_joint_configuration.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
