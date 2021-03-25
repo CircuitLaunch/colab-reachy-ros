@@ -19,6 +19,8 @@ class MaskDetectorNode:
         mask_path = Path(rospy.get_param("~mask_model"))
         self._detector = MaskDetector(face_path, mask_path)
 
+        self._frame_output_buffer = []  # TODO: collection type
+
         self._detection_publisher = rospy.Publisher(f"{self._name}/faces_detected", FaceAndMaskDetections, queue_size=1)
         self._debug_publisher = rospy.Publisher(f"{self._name}/debug_image", Image, queue_size=1)
         self._subscriber = rospy.Subscriber(f"{self._source}/image_raw", Image, self._callback)
@@ -38,9 +40,8 @@ class MaskDetectorNode:
             for pred in preds:
                 if pred[0] >= 0.5:  # TODO: Better standards for confirming a face? Uncertainty threshold?
                     masks += 1
-            
 
-            # TODO: This output fluctuates. What are reasonable standards for determining detections to publish?
+            # TODO: Store the last 5 frames, publish if at least 3 of 5 agree
         except Exception as e:
             rospy.logerr(f"Error processing image: {e}", exc_info=True)
 
