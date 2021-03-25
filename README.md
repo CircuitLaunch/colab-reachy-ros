@@ -46,6 +46,23 @@ TODO: add control of reachy's 2x antenna's (ears)
 ##### but could be conerted to something that shakes the head back and forth
 ```bash
 rostopic pub /head/position_animator trajectory_msgs/JointTrajectory '{points:[{positions:[1.5,1.5]},{positions:[0.8,1.2]},{positions:[0.7,0.6]},{positions:[0.3,0.1]}]}'
+# single position (move tilt and yaw) debug statements
+rostopic pub /head/position_animator/debug_point trajectory_msgs/JointTrajectoryPoint '{positions: [0.78, -0.7853982]}'
+rostopic pub /head/position_animator/debug_point trajectory_msgs/JointTrajectoryPoint '{positions: [0.0, 0.0]}'
+rostopic pub /head/position_animator/debug_point trajectory_msgs/JointTrajectoryPoint '{positions: [0.0, 1.308997]}'
+rostopic pub /head/position_animator/debug_point trajectory_msgs/JointTrajectoryPoint '{positions: [0.0, 2.007129]}'
+# Animation example
+rostopic pub /head/position_animator trajectory_msgs/JointTrajectory '{points:[{positions:[1.5,1.5]},{positions:[1.5,1.308997]},{positions:[1.5,1.5]},{positions:[1.5,1.308997]},{positions:[1.5,1.5]},]}'
+
+rostopic pub /head/position_animator trajectory_msgs/JointTrajectory '{points:[{positions:[1.5,1.745329]},{positions:[1.5,1.5]},{positions:[1.5,1.745329]},{positions:[1.5,1.5]},{positions:[1.5,1.5]},]}'
+
+```
+#### how to use degree mode debug topic 
+#### usecase : i just want to move the motors to one position for testing
+#### NOTE: `the angles are in degrees not! radians`
+```bash
+rostopic pub /head/position_animator/debug_point_degrees trajectory_msgs/JointTrajectoryPoint '{positions: [0, 75]}'
+
 ```
 #### Hardware Requirments
 - 2 hobby servo motors
@@ -107,12 +124,18 @@ value="/dev/ttyACM0"/ must be changed to reflect the arduino your using
 
 to find your arduino port run this command
 1) 
-ls /dev/ttyAMC*
+ls /dev/ttyACM*
 2) if that doesnt work try
 ls /dev/serial/by-id
 ```
-
-
+#### Notes
+#### The arduino code has a manual offset of -90 to account for how the servo motors are mounted that can be changed to 0 if you dont have any offsets
+### filename: `arduino_code/ServoControl/ServoControl.ino`
+### ` int head_yaw_offset  = -90`
+### to 
+### `int head_yaw_offset  = 0;`
+### title range is between 115 degrees (90+25d ) <->  75 degrees (90-15d ) with no offset
+### ----- where 90 degrees is the head facing forward (virtical)
 
 
 

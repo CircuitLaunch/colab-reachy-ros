@@ -39,10 +39,10 @@ DELAY = 0.5
 yaw_servo_position = UInt16()
 tilt_servo_position = UInt16()
 
-yaw_min = math.radians(-45) # in degrees from x to y angles are accepted positions
-yaw_max = math.radians(45)
-tilt_min = math.radians(-45)
-tilt_max = math.radians(45)
+yaw_min = 0 # in degrees from x to y angles are accepted positions
+yaw_max = 360
+tilt_min = 75
+tilt_max = 115
 # helper function
 # keeps the input number between a high and alow
 def constrain(input:float, low:float, high:float) -> float:
@@ -58,8 +58,25 @@ def move_servos(msg: JointTrajectoryPoint) -> None:
     print(msg.positions[0])
     print(msg.positions[1])
 
-    yaw_degrees = math.degrees(constrain(msg.positions[0], yaw_min, yaw_max))
-    tilt_degrees = math.degrees(constrain(msg.positions[1],tilt_min, tilt_max))
+    yaw_degrees = constrain(math.degrees(msg.positions[0]), yaw_min, yaw_max)
+    tilt_degrees = constrain(math.degrees(msg.positions[1]),tilt_min, tilt_max)
+    
+    print("Yaw: ", yaw_degrees, "tilt: ", tilt_degrees)
+    # convert float angle radians -pi/2 to pi/2 to integer degrees 0-180 
+    yaw_servo_position.data   = int(yaw_degrees)
+    tilt_servo_position.data = int(tilt_degrees)
+
+    # send an int angle to move the servo position to 0-180  
+    yaw_servo.publish(yaw_servo_position)
+    tilt_servo.publish(tilt_servo_position)
+
+def move_servos_degree_debug(msg: JointTrajectoryPoint) -> None:
+    print(msg)
+    print(msg.positions[0])
+    print(msg.positions[1])
+
+    yaw_degrees = constrain((msg.positions[0]), yaw_min, yaw_max)
+    tilt_degrees = constrain((msg.positions[1]),tilt_min, tilt_max)
     
     print("Yaw: ", yaw_degrees, "tilt: ", tilt_degrees)
     # convert float angle radians -pi/2 to pi/2 to integer degrees 0-180 
@@ -108,6 +125,7 @@ if __name__ == "__main__":
     # rostopic pub /move_head "/{header:{}, name: ['servo1', 'servo2'], position: [0.5, 0.5], velocity:[], effort:[]}""
     sub=rospy.Subscriber("/head/position_animator", JointTrajectory, process_positions)
     sub=rospy.Subscriber("/head/position_animator/debug_point", JointTrajectoryPoint, move_servos)
+    sub=rospy.Subscriber("/head/position_animator/debug_point_degrees", JointTrajectoryPoint, move_servos_degree_debug)
     
     rate=rospy.Rate(10)
     
