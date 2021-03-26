@@ -55,7 +55,7 @@ class Greet(smach.State):
     def _right_arm_gesture(self, poses: List[str]):
         # Set arm stiff
         rospy.wait_for_service("/right_arm_controller/set_arm_compliant")  # TODO: Remove this? Add a timeout?
-        compliance_service = rospy.ServiceProxy("/right_Arm_controller/set_arm_compliant", SetBool)
+        compliance_service = rospy.ServiceProxy("/right_arm_controller/set_arm_compliant", SetBool)
         compliance_service(False)
 
         for pose in poses:
