@@ -17,10 +17,10 @@ if __name__ == "__main__":
     rospy.init_node("reachy_state_machine")
 
     # Create state machine
-    sm = smach.StateMachine(outcomes=["exit"])  # smach requires a StateMachine to have a list of outcomes
+    sm = smach.StateMachine(outcomes=["exit"])  # A state machine will only exit if it transitions to an outcome
 
     with sm:
-        # Add states and map state outcomes to subsequent states
+        # Add states and map state outcomes to subsequent states/state machine outcomes
 
         # remapping maps the userdata variable names used by states to the userdata variable names
         # used by the state machine.
