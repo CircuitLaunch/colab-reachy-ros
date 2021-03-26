@@ -42,7 +42,7 @@ class MaskDetectorNode:
 
             # Store the last 5 frames, publish if at least 3 of 5 agree
             self._detection_buffer.append((faces, masks))
-            if len(self._detection_buffer > 5):
+            if len(self._detection_buffer) > 5:
                 self._detection_buffer.pop(0)  # Remove first element
 
             for start_index in range(0, 3):
