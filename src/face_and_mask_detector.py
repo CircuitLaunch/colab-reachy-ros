@@ -47,9 +47,11 @@ class MaskDetectorNode:
 
                 for start_index in range(0, 3):
                     if self._detection_buffer.count(self._detection_buffer[start_index]) >= 3:
-                        self._detection_publisher.publish(
-                            faces=self._detection_buffer[start_index][0], masks=self._detection_buffer[start_index][1]
-                        )
+                        message = FaceAndMaskDetections()
+                        message.header.stamp = rospy.Duration.from_sec(rospy.get_time())
+                        message.faces = self._detection_buffer[start_index][0]
+                        message.masks = self._detection_buffer[start_index][1]
+                        self._detection_publisher.publish(message)
                         break
 
             if self._debug_output:
