@@ -1,4 +1,6 @@
 <launch>
+  <arg name="debug_output" default="true" />
+
   <node name="right_camera" pkg="cv_camera" type="cv_camera_node">
     <param name="device_id" value="2" />
   </node>
@@ -7,5 +9,6 @@
     <param name="face_model_dir" value="$(find colab_reachy_ros)/config/cv_models/face_detection" />
     <param name="mask_model" value="$(find colab_reachy_ros)/config/cv_models/mask_detector.model" />
     <param name="source" value="right_camera" />
+    <param name="debug_output" value="$(arg debug_output)" />
   </node>
 </launch>
