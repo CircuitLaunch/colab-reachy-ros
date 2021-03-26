@@ -45,12 +45,12 @@ class MaskDetectorNode:
             if len(self._detection_buffer) > 5:
                 self._detection_buffer.pop(0)  # Remove first element
 
-            for start_index in range(0, 3):
-                if self._detection_buffer.count(self._detection_buffer[start_index]) >= 3:
-                    self._detection_publisher.publish(
-                        faces=self._detection_buffer[start_index][0], masks=self._detection_buffer[start_index][1]
-                    )
-                    break
+                for start_index in range(0, 3):
+                    if self._detection_buffer.count(self._detection_buffer[start_index]) >= 3:
+                        self._detection_publisher.publish(
+                            faces=self._detection_buffer[start_index][0], masks=self._detection_buffer[start_index][1]
+                        )
+                        break
 
             if self._debug_output:
                 debug_image = generate_debug_frame(cv_image, locs, preds)
