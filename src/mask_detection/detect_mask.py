@@ -60,11 +60,10 @@ class MaskDetector:
     def detect_and_predict_mask(self, frame: np.ndarray, face_confidence: float = 0.5):
         """
         frame: cv2 image frame
-        faceNet: face detector model
-        maskNet: mask detector model
         face_confidence: If a face detection confidence is below this probability, the potential face will be ignored
 
-        Returns a list of pairs of form (probability of mask, probability of no mask)
+        Returns a numpy.ndarray of the form [[probability of mask detected, probability of mask not detected], ...]
+        The two probabilities for each face will add to 1 (barring rounding errors)
         """
 
         # grab the dimensions of the frame and then construct a blob
@@ -112,14 +111,8 @@ class MaskDetector:
         # only make a predictions if at least one face was detected
         if len(faces) > 0:
             faces = np.array(faces, dtype="float32")
-            print(f"Face array dimensions after construction: {faces.shape}")
-            preds = self._mask_net.predict(faces, batch_size=32)
-            #for face in faces:
-            #    face_array = np.array([face], dtype="float32")
-            #    preds.append(self._mask_net.predict(face_array)[0])
-            print(f"Preds type: {type(preds)}")
-        # return a 2-tuple of the face locations and their corresponding
-        # locations
+            preds = self._mask_net.predict(faces, batch_size=32)  # Type: numpy.ndarray
+        # return a 2-tuple of the face locations and their corresponding mask probabilities
         return (locs, preds)
 
 
