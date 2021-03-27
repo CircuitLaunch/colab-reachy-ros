@@ -1,0 +1,3 @@
+face_detection/deploy.prototxt and mask_detection/mask_detector.model are from [this pyimagesearch tutorial](https://www.pyimagesearch.com/2020/05/04/covid-19-face-mask-detector-with-opencv-keras-tensorflow-and-deep-learning/) ([License](https://www.pyimagesearch.com/faqs/single-faq/what-is-the-code-license-associated-with-your-examples).)
+
+face_detection/res10_300x300_ssd_iter_140000.caffemodel is used in the same tutorial, but originates [here](https://github.com/opencv/opencv_3rdparty/blob/dnn_samples_face_detector_20170830/res10_300x300_ssd_iter_140000.caffemodel).

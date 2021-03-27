@@ -172,6 +172,7 @@ class ReachyArmNode:
     def shutdown_hook(self):
         for m in self._dxl_motors.values():
             m.compliant = True
+        rospy.sleep(0.2)
 
     def _set_arm_compliance(self, request: SetBool):
         self._arm_compliant = request.data
