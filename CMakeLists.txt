@@ -165,6 +165,9 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   src/reachy_arm_controller.py
+  src/speech_listener.py
+  src/keyword_chatbot_node.py
+  src/speech_speaker.py
   src/face_and_mask_detector.py
   src/reachy_state_machine.py
   scripts/record_joint_configuration.py
