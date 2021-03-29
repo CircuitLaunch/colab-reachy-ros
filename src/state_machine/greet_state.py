@@ -108,6 +108,7 @@ class Greet(smach.State):
         
         # shake the head yes to indicate that reachy is listening
         self._head_publisher.publish(self._head_yes_guesture)
+        rospy.loginfo("Head gesture: 'YES'")
 
         poses = ["hello_01", "hello_02"]
         if not self._right_arm_overheating:
