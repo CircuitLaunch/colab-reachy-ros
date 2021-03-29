@@ -169,10 +169,10 @@ catkin_install_python(PROGRAMS
   src/keyword_chatbot_node.py
   src/speech_speaker.py
   src/face_and_mask_detector.py
+  src/head_motor_control.py
   src/reachy_state_machine.py
   scripts/record_joint_configuration.py
   scripts/goto_joint_configuration.py
-  scripts/head_motor_control.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
