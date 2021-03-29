@@ -22,6 +22,20 @@ class Greet(smach.State):
         self._detected_masks = None
 
         self._right_arm_overheating = False
+        # creating a variable to hold the yes guesture animation
+        self._head_yes_guesture = JointTrajectory()
+        # for the array of points 
+        # [trajectory_msgs/JointTrajectory Documentation](http://docs.ros.org/en/api/trajectory_msgs/html/msg/JointTrajectory.html)
+        # for the indivitual points
+        # [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/melodic/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
+        # simulates head shaking yes motion up and down
+        self._head_yes_guesture["points"] =[ 
+            {positions:[0.0,90.0]}, # head is at rest
+            {positions:[0.0,115.0]},# head moves down
+            {positions:[0.0,90.0]}, # head moves back to rest
+            {positions:[0.0,115.0]},# head moves down
+            {positions:[0.0,90.0]}  # head moves back to rest
+            ]
 
         self._face_mask_subscriber = rospy.Subscriber(
             "/mask_detector/faces_detected", FaceAndMaskDetections, self._face_mask_callback, queue_size=10
@@ -38,6 +52,11 @@ class Greet(smach.State):
 
         self._right_arm_commander = moveit_commander.MoveGroupCommander("right_arm")
         load_joint_configurations_from_file(self._right_arm_commander)
+
+        # this publisher moves the reachy's head around
+        self._head_publisher = rospy.Publisher("/head/position_animator_debug_degrees", trajectory_msgs/JointTrajectory, queue_size=1)
+
+
 
     def _face_mask_callback(self, data: FaceAndMaskDetections):
         with self._mutex:
@@ -86,6 +105,9 @@ class Greet(smach.State):
         self._speech_publisher.publish("Hi, I'm Reachy!")
         # self._head_publisher.publish(a_trajectory)
         rospy.sleep(0.05)  # If the function exits immediately, the publishes won't happen
+        
+        # shake the head yes to indicate that reachy is listening
+        self._head_publisher.publish(self._head_yes_guesture)
 
         poses = ["hello_01", "hello_02"]
         if not self._right_arm_overheating:
