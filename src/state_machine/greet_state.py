@@ -30,18 +30,14 @@ class Greet(smach.State):
         # for the indivitual points
         # [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/melodic/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
         # simulates head shaking yes motion up and down
-        _point_1 = JointTrajectory()
-        _point_1["positions"] = [0.0,90.0]
+        _point_1 = JointTrajectoryPoint()
+        _point_1.positions = [90.0,90.0]
+        # _point_1.positions[1] = [90.0]
+        
+        _point_2 = JointTrajectoryPoint()
+        _point_2.positions = [90.0,115.0]
 
-        self._head_yes_guesture["points"][0] = _point_1 
-        #  [ 
-        #     {positions:[0.0,90.0]}, # head is at rest
-        #     {positions:[0.0,115.0]},# head moves down
-        #     {positions:[0.0,90.0]}, # head moves back to rest
-        #     {positions:[0.0,115.0]},# head moves down
-        #     {positions:[0.0,90.0]}  # head moves back to rest
-        #     ]
-
+        self._head_yes_guesture.points = [_point_1,_point_2,_point_1,_point_2,_point_1] 
         self._face_mask_subscriber = rospy.Subscriber(
             "/mask_detector/faces_detected", FaceAndMaskDetections, self._face_mask_callback, queue_size=10
         )
@@ -53,13 +49,13 @@ class Greet(smach.State):
         )
 
         self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
-        self._head_publisher = rospy.Publisher("/head/position_animator", JointTrajectory, queue_size=1)
+        # self._head_publisher = rospy.Publisher("/head/position_animator", JointTrajectory, queue_size=1)
 
         self._right_arm_commander = moveit_commander.MoveGroupCommander("right_arm")
         load_joint_configurations_from_file(self._right_arm_commander)
 
         # this publisher moves the reachy's head around
-        self._head_publisher = rospy.Publisher("/head/position_animator_debug_degrees", trajectory_msgs/JointTrajectory, queue_size=1)
+        # self._head_publisher = rospy.Publisher("/head/position_animator_debug_degrees", JointTrajectory, queue_size=1)
 
 
 
