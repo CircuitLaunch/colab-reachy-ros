@@ -3,6 +3,7 @@ import smach
 import threading
 from std_msgs.msg import String
 from trajectory_msgs.msg import JointTrajectory
+from trajectory_msgs.msg import JointTrajectoryPoint
 from colab_reachy_ros.msg import FaceAndMaskDetections, JointTemperatures
 from std_srvs.srv import SetBool
 from typing import List
@@ -29,13 +30,17 @@ class Greet(smach.State):
         # for the indivitual points
         # [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/melodic/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
         # simulates head shaking yes motion up and down
-        self._head_yes_guesture["points"] =[ 
-            {positions:[0.0,90.0]}, # head is at rest
-            {positions:[0.0,115.0]},# head moves down
-            {positions:[0.0,90.0]}, # head moves back to rest
-            {positions:[0.0,115.0]},# head moves down
-            {positions:[0.0,90.0]}  # head moves back to rest
-            ]
+        _point_1 = JointTrajectory()
+        _point_1["positions"] = [0.0,90.0]
+
+        self._head_yes_guesture["points"][0] = _point_1 
+        #  [ 
+        #     {positions:[0.0,90.0]}, # head is at rest
+        #     {positions:[0.0,115.0]},# head moves down
+        #     {positions:[0.0,90.0]}, # head moves back to rest
+        #     {positions:[0.0,115.0]},# head moves down
+        #     {positions:[0.0,90.0]}  # head moves back to rest
+        #     ]
 
         self._face_mask_subscriber = rospy.Subscriber(
             "/mask_detector/faces_detected", FaceAndMaskDetections, self._face_mask_callback, queue_size=10
