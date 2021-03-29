@@ -45,6 +45,7 @@ TODO: add control of reachy's 2x antenna's (ears)
 ##### this sends a animation for the head in this case its dummy data
 ##### but could be conerted to something that shakes the head back and forth
 ```bash
+roslaunch colab_reachy_ros head.launch
 rostopic pub /head/position_animator trajectory_msgs/JointTrajectory '{points:[{positions:[1.5,1.5]},{positions:[0.8,1.2]},{positions:[0.7,0.6]},{positions:[0.3,0.1]}]}'
 # single position (move tilt and yaw) debug statements
 rostopic pub /head/position_animator/debug_point trajectory_msgs/JointTrajectoryPoint '{positions: [0.78, -0.7853982]}'
@@ -62,7 +63,6 @@ rostopic pub /head/position_animator trajectory_msgs/JointTrajectory '{points:[{
 #### NOTE: `the angles are in degrees not! radians`
 ```bash
 rostopic pub /head/position_animator/debug_point_degrees trajectory_msgs/JointTrajectoryPoint '{positions: [0, 75]}'
-
 ```
 #### Hardware Requirments
 - 2 hobby servo motors
@@ -136,8 +136,70 @@ ls /dev/serial/by-id
 ### `int head_yaw_offset  = 0;`
 ### title range is between 115 degrees (90+25d ) <->  75 degrees (90-15d ) with no offset
 ### ----- where 90 degrees is the head facing forward (virtical)
+### how to create a head nodding animation
+#### yes guesture
+#### NOTE: (0, 90) is a nutral head position head facing straight forward and neck stright upright
+```bash
+in degrees
+0,90 start
+0,115
+0,90
+0,115
+0,90 
 
 
+0,90 start of node two
+0,115
+0,90
+0,115
+0,90 end
+```
+### commandline pub version of yes guesture
+```bash
+
+0, 90
+0,115
+0, 90
+0, 115
+0, 90
+{points: [
+    {positions:[0, 90]},
+    {positions:[0, 115]},
+    {positions:[0, 90]},
+    {positions:[0, 115]},
+    {positions:[0, 90]},
+]}
+
+rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[0.0,90.0]},{positions:[0.0,115.0]},{positions:[0.0,90.0]},{positions:[0.0,115.0]},{positions:[0.0,90.0]},]}'
+```
+#### no guesture
+```bash 
+  0, 90
+-45, 90
+ 45, 90
+  0, 90
+
+
+{points: [
+    {positions:[0.0, 90.0]},
+    {positions:[-45.0, 90.0]},
+    {positions:[0.0, 90.0]},
+    {positions:[45.0, 90.0]},
+    {positions:[0.0, 90.0]},
+]}
+rostopic pub /head/position_animator/debug_point_degrees trajectory_msgs/JointTrajectoryPoint '{positions: [180,90]}'
+
+rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[0,90]},{positions:[30,90]},{positions:[0,90]},{positions:[30,90]},{positions:[0,90]}]}'
+```
+### Look right
+```bash
+ 0, 90
+45, 90
+45, 90
+ 0, 90
+
+rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[0,90]},{positions:[45,90]},{positions:[45,90]},{positions:[0,90]}]}'  
+```
 
 
 

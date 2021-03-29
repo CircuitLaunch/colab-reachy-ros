@@ -33,7 +33,7 @@ global yaw_servo_position
 global tilt_servo_position
 
 # standard delay between moving the joints
-DELAY = 0.5
+DELAY = 1.0
 # setting up interger variables 
 #     the arduino only accepts integers
 yaw_servo_position = UInt16()
@@ -69,8 +69,9 @@ def move_servos(msg: JointTrajectoryPoint) -> None:
     # send an int angle to move the servo position to 0-180  
     yaw_servo.publish(yaw_servo_position)
     tilt_servo.publish(tilt_servo_position)
-
-def move_servos_degree_debug(msg: JointTrajectoryPoint) -> None:
+# im only dulpicating this one betcause i cant think in radians and its a identical function to the one above
+# exept i dont convert to degrees from radians
+def move_servos_degrees_debug(msg: JointTrajectoryPoint) -> None:
     print(msg)
     print(msg.positions[0])
     print(msg.positions[1])
@@ -86,6 +87,7 @@ def move_servos_degree_debug(msg: JointTrajectoryPoint) -> None:
     # send an int angle to move the servo position to 0-180  
     yaw_servo.publish(yaw_servo_position)
     tilt_servo.publish(tilt_servo_position)
+
 # runs though all the JointTrajectoryPoint's inside a JointTrajectory
 # which basically runs though an array of angles for each of the joints in this case
 # a joint is a servo motor (and a diamixel motor for the antenna)
@@ -95,6 +97,13 @@ def process_positions(msg: JointTrajectory)->None:
     for joint_point in msg.points:
         print("Here")
         move_servos(joint_point)
+        sleep(DELAY)
+
+def process_positions_debug_degrees(msg: JointTrajectory)->None:
+    print(msg)
+    for joint_point in msg.points:
+        print("Here")
+        move_servos_degrees_debug(joint_point)
         sleep(DELAY)
 
 if __name__ == "__main__":
@@ -116,7 +125,7 @@ if __name__ == "__main__":
     # Data format
     # http://docs.ros.org/en/api/sensor_msgs/html/msg/JointState.html
 
-    # Header header
+    # Header headerx
     # string[] name  <- optional
     # float64[] position
     # float64[] velocity
@@ -124,8 +133,10 @@ if __name__ == "__main__":
 
     # rostopic pub /move_head "/{header:{}, name: ['servo1', 'servo2'], position: [0.5, 0.5], velocity:[], effort:[]}""
     sub=rospy.Subscriber("/head/position_animator", JointTrajectory, process_positions)
+    sub=rospy.Subscriber("/head/position_animator_debug_degrees", JointTrajectory, process_positions_debug_degrees)
+
     sub=rospy.Subscriber("/head/position_animator/debug_point", JointTrajectoryPoint, move_servos)
-    sub=rospy.Subscriber("/head/position_animator/debug_point_degrees", JointTrajectoryPoint, move_servos_degree_debug)
+    sub=rospy.Subscriber("/head/position_animator/debug_point_degrees", JointTrajectoryPoint, move_servos_degrees_debug)
     
     rate=rospy.Rate(10)
     
