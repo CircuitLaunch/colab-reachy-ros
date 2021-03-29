@@ -4,7 +4,7 @@
 
 import rospy
 from chatterbot import ChatBot
-from chatterbot.trainers import ChatterBotCorpusTrainer, ListTrainer
+from chatterbot.trainers import ListTrainer  # , ChatterBotCorpusTrainer
 
 
 from std_msgs.msg import String

@@ -8,8 +8,11 @@ import sys
 
 from state_machine.idle_state import Idle
 from state_machine.greet_state import Greet
+from state_machine.has_mask_state import HasMask
 from state_machine.no_mask_state import NoMask
 from state_machine.goodbye_state import Goodbye
+from state_machine.direct_to_kitchen_state import DirectToKitchen
+from state_machine.joke_state import Joke
 
 
 if __name__ == "__main__":
@@ -37,22 +40,35 @@ if __name__ == "__main__":
             "GREET",
             Greet(),
             transitions={
-                "all_masks": "GOODBYE",  # TODO: Real state transition to HAS_MASK
+                "all_masks": "HAS_MASK",
                 "missing_mask": "NO_MASK",
                 "nobody_here": "IDLE",
                 "preempted": "exit",
             },
-            remapping={"conversation_started": "conversation_started"},
         )
 
         smach.StateMachine.add(
             "NO_MASK",
             NoMask(),
             transitions={
-                "everybody_masked": "GOODBYE",
+                "everybody_masked": "HAS_MASK",
                 "nobody_here": "IDLE",
                 "preempted": "exit",
-            },  # TODO: Real state transition to HAS_MASK
+            },
+        )
+
+        smach.StateMachine.add(
+            "HAS_MASK",
+            HasMask,
+            transitions={
+                "one_not_masked": "NO_MASK",
+                "nobody_here": "IDLE",
+                "goodbye": "GOODBYE",
+                "joke": "JOKE",
+                "kitchen": "KITCHEN",
+                "preempted": "exit",
+            },
+            remapping={"conversation_started": "conversation_started"},
         )
 
         smach.StateMachine.add(
@@ -60,6 +76,10 @@ if __name__ == "__main__":
             Goodbye(),
             transitions={"nobody_here": "IDLE", "preempted": "exit"},
         )
+
+        smach.StateMachine.add("JOKE", Joke(), transitions={"completed": "HAS_MASK", "preempted": "exit"})
+
+        smach.StateMachine.add("KITCHEN", DirectToKitchen(), transitions={"completed": "HAS_MASK", "preempted": "exit"})
 
     # Create a thread to execute the smach container
     smach_thread = threading.Thread(target=sm.execute)

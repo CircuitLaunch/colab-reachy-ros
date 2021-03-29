@@ -19,7 +19,7 @@
 import rospy
 import math
 from std_msgs.msg import UInt16
-from sensor_msgs.msg import JointState
+# from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
 

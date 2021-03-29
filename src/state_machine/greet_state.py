@@ -12,9 +12,7 @@ from motion_control.moveit_helpers import load_joint_configurations_from_file
 
 class Greet(smach.State):
     def __init__(self):
-        super().__init__(
-            outcomes=["all_masks", "missing_mask", "nobody_here", "preempted"], output_keys=["conversation_started"]
-        )
+        super().__init__(outcomes=["all_masks", "missing_mask", "nobody_here", "preempted"])
 
         self._mutex = threading.Lock()
 
@@ -76,8 +74,6 @@ class Greet(smach.State):
         compliance_service(True)
 
     def execute(self, userdata: smach.UserData):
-        userdata.conversation_started = True
-
         # Every state must check if a preempt has been requested (e.g. in case of Ctrl+C)
         # Smach does NOT handle this itself
         if self.preempt_requested():
