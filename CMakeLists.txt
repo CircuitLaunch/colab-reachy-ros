@@ -172,6 +172,7 @@ catkin_install_python(PROGRAMS
   src/reachy_state_machine.py
   scripts/record_joint_configuration.py
   scripts/goto_joint_configuration.py
+  scripts/head_motor_control.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
