@@ -35,7 +35,7 @@
   <node name="speech_speaker" pkg="colab_reachy_ros" type="speech_speaker.py" respawn="true" output="screen" />
 
   <!-- Non-MoveIt head -->
-  <include file="$(find colab_reachy)ros)/launch/head.launch" if="$(arg head)" />
+  <include file="$(find colab_reachy_ros)/launch/head.launch" if="$(arg head)" />
 
 
   <!-- MoveIt arms -->
