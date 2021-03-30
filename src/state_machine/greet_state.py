@@ -10,6 +10,8 @@ from typing import List
 import moveit_commander
 from motion_control.moveit_helpers import load_joint_configurations_from_file
 
+# helper commands for head
+from ..motion_control.head_node_helpers  import create_head_animation
 
 class Greet(smach.State):
     def __init__(self):
@@ -21,21 +23,17 @@ class Greet(smach.State):
         self._detected_masks = None
 
         self._right_arm_overheating = False
-        # creating a variable to hold the yes guesture animation
-        self._head_yes_guesture = JointTrajectory()
-        # for the array of points 
-        # [trajectory_msgs/JointTrajectory Documentation](http://docs.ros.org/en/api/trajectory_msgs/html/msg/JointTrajectory.html)
-        # for the indivitual points
-        # [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/melodic/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
-        # simulates head shaking yes motion up and down
-        _point_1 = JointTrajectoryPoint()
-        _point_1.positions = [90.0,90.0]
-        # _point_1.positions[1] = [90.0]
-        
-        _point_2 = JointTrajectoryPoint()
-        _point_2.positions = [90.0,115.0]
 
-        self._head_yes_guesture.points = [_point_1,_point_2,_point_1,_point_2,_point_1] 
+
+        # creating a variable to hold the yes guesture animation
+        #       for the array of points 
+        #       [trajectory_msgs/JointTrajectory Documentation](http://docs.ros.org/en/api/trajectory_msgs/html/msg/JointTrajectory.html)
+        #       for the indivitual points
+        #       [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/melodic/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
+        #       simulates head shaking yes motion up and down
+        self._head_yes_guesture = create_head_animation([[90.0,90.0],[90.0,115.0],[90.0,90.0],[90.0,115.0],[90.0,90.0]])
+
+        
         self._face_mask_subscriber = rospy.Subscriber(
             "/mask_detector/faces_detected", FaceAndMaskDetections, self._face_mask_callback, queue_size=10
         )
