@@ -43,7 +43,7 @@
 
 
   <!-- Arm controllers -->
-  <node name="left_arm_controller" pkg="colab_reachy_ros" type="reachy_arm_controller.py" output="screen" if="$(arg left_arm)">
+  <node name="left_arm_controller" pkg="colab_reachy_ros" type="reachy_arm_controller.py" if="$(arg left_arm)">
     <param name="side" value="left" />
     <param name="io" value="/dev/ttyUSB*" />
     <param name="rate" value="100" />
@@ -55,7 +55,7 @@
     <param name="arm_goal_delay_tolerance" value="0.1" />
   </node>
 
-  <node name="right_arm_controller" pkg="colab_reachy_ros" type="reachy_arm_controller.py" output="screen" if="$(arg right_arm)">
+  <node name="right_arm_controller" pkg="colab_reachy_ros" type="reachy_arm_controller.py" if="$(arg right_arm)">
     <param name="side" value="right" />
     <param name="io" value="/dev/ttyUSB*" />
     <param name="rate" value="100" />
