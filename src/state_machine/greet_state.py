@@ -31,7 +31,7 @@ class Greet(smach.State):
         #       for the indivitual points
         #       [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/melodic/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
         #       simulates head shaking yes motion up and down
-        self._head_yes_guesture = create_head_animation([[90.0,90.0],[90.0,115.0],[90.0,90.0],[90.0,115.0],[90.0,90.0]])
+        self._head_yes_gesture = create_head_animation([[90.0,90.0],[90.0,115.0],[90.0,90.0],[90.0,115.0],[90.0,90.0]])
 
         
         self._face_mask_subscriber = rospy.Subscriber(
@@ -102,7 +102,7 @@ class Greet(smach.State):
         rospy.sleep(0.05)  # If the function exits immediately, the publishes won't happen
         
         # shake the head yes to indicate that reachy is listening
-        self._head_publisher.publish(self._head_yes_guesture)
+        self._head_publisher.publish(self._head_yes_gesture)
         rospy.loginfo("Head gesture: 'YES'")
 
         poses = ["hello_01", "hello_02"]
