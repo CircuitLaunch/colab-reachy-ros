@@ -40,5 +40,5 @@ class DirectToKitchen(smach.State):
         self._magni_publisher.publish(self._msg)  # Set a goal to Magni
         self._speech_publisher.publish("Please follow me to the Kitchen")
 
-        return "completed"
         rospy.sleep(10)
+        return "completed"

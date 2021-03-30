@@ -34,5 +34,6 @@ class Joke(smach.State):
         self._speech_publisher.publish(joke[1])  # question
         rospy.sleep(2)
         self._speech_publisher.publish(joke[2])  # punch
-        return "completed"
+
         rospy.sleep(10)
+        return "completed"
