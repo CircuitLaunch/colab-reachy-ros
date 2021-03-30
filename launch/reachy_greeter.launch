@@ -24,13 +24,13 @@
   </node>
 
   <!-- Speech and chatbot -->
-  <node name="speech_listener" pkg="colab_reachy_ros" type="keyword_chatbot_node.py" output="screen">
+  <node name="speech_listener" pkg="colab_reachy_ros" type="speech_listener.py" output="screen">
     <!-- Device name - uses the default microphone if no name is provided -->
     <!-- Searches for a substring match, and uses the first found. Fails with exception if named microphone does not exist -->
     <param name="device_name" value="ReSpeaker" />
   </node>
 
-  <node name="keyword_chatbot_node" pkg="colab_reachy_ros" type="speech_listener.py" output="screen" />
+  <node name="keyword_chatbot_node" pkg="colab_reachy_ros" type="keyword_chatbot_node.py" output="screen" />
 
   <node name="speech_speaker" pkg="colab_reachy_ros" type="speech_speaker.py" output="screen" />
 
