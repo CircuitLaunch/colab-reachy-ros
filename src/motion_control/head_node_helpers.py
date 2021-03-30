@@ -8,7 +8,10 @@
 from typing import List
 from trajectory_msgs.msg import JointTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
-
+# for the array of poses 
+# [trajectory_msgs/JointTrajectory Documentation](http://docs.ros.org/en/api/trajectory_msgs/html/msg/JointTrajectory.html)
+# for the individual poses
+# [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/melodic/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
 
 def create_head_animation(animation_list: List)-> JointTrajectoryPoint:
     """
