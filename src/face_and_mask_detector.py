@@ -42,17 +42,18 @@ class MaskDetectorNode:
 
             # Store the last 5 frames, publish if at least 3 of 5 agree
             self._detection_buffer.append((faces, masks))
-            if len(self._detection_buffer) > 5:
+            if len(self._detection_buffer) > 10:
                 self._detection_buffer.pop(0)  # Remove first element
 
-                for start_index in range(0, 3):
-                    if self._detection_buffer.count(self._detection_buffer[start_index]) >= 3:
-                        message = FaceAndMaskDetections()
-                        message.header.stamp = rospy.Duration.from_sec(rospy.get_time())
-                        message.faces = self._detection_buffer[start_index][0]
-                        message.masks = self._detection_buffer[start_index][1]
-                        self._detection_publisher.publish(message)
-                        break
+                # for start_index in range(0, 3):
+                start_index = 0
+                if self._detection_buffer.count(self._detection_buffer[start_index]) == 10:
+                    message = FaceAndMaskDetections()
+                    message.header.stamp = rospy.Duration.from_sec(rospy.get_time())
+                    message.faces = self._detection_buffer[start_index][0]
+                    message.masks = self._detection_buffer[start_index][1]
+                    self._detection_publisher.publish(message)
+                    # break
 
             if self._debug_output:
                 debug_image = generate_debug_frame(cv_image, locs, preds)

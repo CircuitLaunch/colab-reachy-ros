@@ -1,0 +1,94 @@
+<launch>
+  <!-- Select your Reachy configuration -->
+  <arg name="head" default="true" />
+  <arg name="left_arm" default="true" />
+  <arg name="right_arm" default="true" />
+
+  <!-- specify the planning pipeline -->
+  <arg name="moveit_pipeline" default="ompl" />
+
+  <!-- By default, we are not in debug mode -->
+  <arg name="mask_debug" default="false" />
+  <arg name="moveit_debug" default="false" />
+
+  <!-- Face and mask detection-->
+  <node name="right_camera" pkg="cv_camera" type="cv_camera_node">
+    <param name="device_id" value="2" />
+  </node>
+
+  <node name="mask_detector" pkg="colab_reachy_ros" type ="face_and_mask_detector.py" output="screen">
+    <param name="face_model_dir" value="$(find colab_reachy_ros)/config/cv_models/face_detection" />
+    <param name="mask_model" value="$(find colab_reachy_ros)/config/cv_models/mask_detector.model" />
+    <param name="source" value="right_camera" />
+    <param name="debug_output" value="$(arg mask_debug)" />
+  </node>
+
+  <!-- Speech and chatbot -->
+  <node name="speech_listener" pkg="colab_reachy_ros" type="speech_listener.py" output="screen">
+    <!-- Device name - uses the default microphone if no name is provided -->
+    <!-- Searches for a substring match, and uses the first found. Fails with exception if named microphone does not exist -->
+    <param name="device_name" value="ReSpeaker" />
+  </node>
+
+  <node name="keyword_chatbot_node" pkg="colab_reachy_ros" type="keyword_chatbot_node.py" output="screen" />
+
+  <node name="speech_speaker" pkg="colab_reachy_ros" type="speech_speaker.py" output="screen" />
+
+  <!-- Non-MoveIt head -->
+  <include file="$(find colab_reachy_ros)/launch/head.launch" if="$(arg head)" />
+
+
+  <!-- MoveIt arms -->
+  <!-- If needed, broadcast static tf for robot root -->
+
+
+  <!-- Arm controllers -->
+  <node name="left_arm_controller" pkg="colab_reachy_ros" type="reachy_arm_controller.py" if="$(arg left_arm)">
+    <param name="side" value="left" />
+    <param name="io" value="/dev/ttyUSB*" />
+    <param name="rate" value="100" />
+
+    <!-- If true, allows trajectories with non-zero speed and acceleration at start and end, so that they can be joined in a smooth overall trajectory -->
+    <param name="arm_continuous_trajectories" value="False" />
+
+    <!-- Amount of time (s) permitted to be late achieving goal -->
+    <param name="arm_goal_delay_tolerance" value="0.1" />
+  </node>
+
+  <node name="right_arm_controller" pkg="colab_reachy_ros" type="reachy_arm_controller.py" if="$(arg right_arm)">
+    <param name="side" value="right" />
+    <param name="io" value="/dev/ttyUSB*" />
+    <param name="rate" value="100" />
+
+    <!-- If true, allows trajectories with non-zero speed and acceleration at start and end, so that they can be joined in a smooth overall trajectory -->
+    <param name="arm_continuous_trajectories" value="False" />
+
+    <!-- Amount of time (s) permitted to be late achieving goal -->
+    <param name="arm_goal_delay_tolerance" value="0.1" />
+  </node>
+  
+  <!-- Aggregate joint states from components -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <rosparam param="source_list">[left_arm_controller/joint_states, right_arm_controller/joint_states]</rosparam>
+  </node>
+
+  <!-- Given the published joint states, publish tf for the robot links -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
+
+  <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
+  <include file="$(find reachy_moveit_config)/launch/move_group.launch">
+    <arg name="head" value="false" />
+    <arg name="left_arm" value="$(arg left_arm)" />
+    <arg name="right_arm" value="$(arg right_arm)" />
+    <arg name="allow_trajectory_execution" value="true"/>
+    <arg name="fake_execution" value="false"/>
+    <arg name="info" value="true"/>
+    <arg name="debug" value="$(arg moveit_debug)"/>
+    <arg name="pipeline" value="$(arg moveit_pipeline)"/>
+  </include>
+
+
+  <!-- State machine -->
+  <node name="reachy_state_machine" pkg="colab_reachy_ros" type="reachy_state_machine.py" output="screen" />
+
+</launch>
