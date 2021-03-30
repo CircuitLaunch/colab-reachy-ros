@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
         smach.StateMachine.add(
             "HAS_MASK",
-            HasMask,
+            HasMask(),
             transitions={
                 "one_not_masked": "NO_MASK",
                 "nobody_here": "IDLE",
