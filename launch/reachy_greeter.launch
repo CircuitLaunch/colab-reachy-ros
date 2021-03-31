@@ -49,9 +49,6 @@
       <param name="port" type="string" command="ls /dev/ttyACM* | head -1"/>
       <param name="baud" type="int" value="57600"/>
   </node>
-  
-  <!-- Non-MoveIt head -->
-  <include file="$(find colab_reachy_ros)/launch/head.launch" if="$(arg head)" />
 
 
   <!-- MoveIt arms -->
