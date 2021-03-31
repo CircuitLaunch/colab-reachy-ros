@@ -18,8 +18,11 @@ class SpeakerNode:
         self._subscriber = rospy.Subscriber("speak", String, self._speak_callback)
 
     def __del__(self):
-        os.remove("speech0.mp3")
-        os.remove(self._filename)
+        try:
+            os.remove(self._filename)
+            os.remove("speech0.mp3")
+        except FileNotFoundError:
+            pass
 
     def _speak_callback(self, msg: String):
         with self._mutex:
