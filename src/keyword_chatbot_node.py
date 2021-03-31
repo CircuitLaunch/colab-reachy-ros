@@ -91,5 +91,5 @@ if __name__ == "__main__":
     pub_1 = rospy.Publisher("voice_command", String, queue_size=10)
     pub_2 = rospy.Publisher("speak", String, queue_size=10)
 
-    sub = rospy.Subscriber("speech_listener/microphone_speech", String, request_analyzer_callback)
+    sub = rospy.Subscriber("/respeaker/microphone_speech", String, request_analyzer_callback)
     rospy.spin()
