@@ -1,4 +1,8 @@
 <launch>
+    <!-- this launches the head node which has a arduino attached to it and has some issues with the port usb number/name switching around on run -->
+    <!-- FIX: for the   value="/dev/ttyACM0"/> changing run a `ls /dev/ttyACM*` change output to match  -->
+    <!-- EX:  -->
+    <!-- /dev/ttyACM0 -> /dev/ttyACM1 -->
     <node name="position_animator_node" pkg="colab_reachy_ros" type="head_motor_control.py" output="screen"></node>
     <!-- setup for serial control of arduino using rosserial_python -->
     <node name="serial_node"        pkg="rosserial_python"      type="serial_node.py">
