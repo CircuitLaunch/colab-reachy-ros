@@ -3,15 +3,13 @@ import smach
 import threading
 from std_msgs.msg import String
 from trajectory_msgs.msg import JointTrajectory
-from trajectory_msgs.msg import JointTrajectoryPoint
 from colab_reachy_ros.msg import FaceAndMaskDetections, JointTemperatures
 from std_srvs.srv import SetBool
 from typing import List
 import moveit_commander
 from motion_control.moveit_helpers import load_joint_configurations_from_file
+from motion_control.head_node_helpers import create_head_animation
 
-# helper commands for head
-from ..motion_control.head_node_helpers  import create_head_animation
 
 class Greet(smach.State):
     def __init__(self):
@@ -24,16 +22,16 @@ class Greet(smach.State):
 
         self._right_arm_overheating = False
 
-
-        # creating a variable to hold the yes guesture animation
-        #       for the array of points 
+        # creating a variable to hold the yes gesture animation
+        #       for the array of points
         #       [trajectory_msgs/JointTrajectory Documentation](http://docs.ros.org/en/api/trajectory_msgs/html/msg/JointTrajectory.html)
         #       for the indivitual points
         #       [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/melodic/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
         #       simulates head shaking yes motion up and down
-        self._head_yes_gesture = create_head_animation([[90.0,90.0],[90.0,115.0],[90.0,90.0],[90.0,115.0],[90.0,90.0]])
+        self._head_yes_gesture = create_head_animation(
+            [[90.0, 90.0], [90.0, 115.0], [90.0, 90.0], [90.0, 115.0], [90.0, 90.0]]
+        )
 
-        
         self._face_mask_subscriber = rospy.Subscriber(
             "/mask_detector/faces_detected", FaceAndMaskDetections, self._face_mask_callback, queue_size=10
         )
@@ -46,13 +44,11 @@ class Greet(smach.State):
 
         self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
 
-        self._right_arm_commander = moveit_commander.MoveGroupCommander("right_arm",  wait_for_servers=60)
+        self._right_arm_commander = moveit_commander.MoveGroupCommander("right_arm", wait_for_servers=60)
         load_joint_configurations_from_file(self._right_arm_commander)
 
         # this publisher moves the reachy's head around
         self._head_publisher = rospy.Publisher("/head/position_animator_debug_degrees", JointTrajectory, queue_size=1)
-
-
 
     def _face_mask_callback(self, data: FaceAndMaskDetections):
         with self._mutex:
@@ -99,7 +95,7 @@ class Greet(smach.State):
         self._speech_publisher.publish("Hi, I'm Reachy!")
         # self._head_publisher.publish(a_trajectory)
         rospy.sleep(0.05)  # If the function exits immediately, the publishes won't happen
-        
+
         # shake the head yes to indicate that reachy is listening
         self._head_publisher.publish(self._head_yes_gesture)
         rospy.loginfo("Head gesture: 'YES'")
