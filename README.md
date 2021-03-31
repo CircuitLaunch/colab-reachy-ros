@@ -139,66 +139,44 @@ ls /dev/serial/by-id
 ### how to create a head nodding animation
 #### yes guesture
 #### NOTE: (0, 90) is a nutral head position head facing straight forward and neck stright upright
-```bash
-in degrees
-0,90 start
-0,115
-0,90
-0,115
-0,90 
-
-
-0,90 start of node two
-0,115
-0,90
-0,115
-0,90 end
-```
 ### commandline pub version of yes guesture
 ```bash
+94,90
+94,115
+94,90
+94,115
+94,90
 
-0, 90
-0,115
-0, 90
-0, 115
-0, 90
-{points: [
-    {positions:[0, 90]},
-    {positions:[0, 115]},
-    {positions:[0, 90]},
-    {positions:[0, 115]},
-    {positions:[0, 90]},
-]}
-
-rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[0.0,90.0]},{positions:[0.0,115.0]},{positions:[0.0,90.0]},{positions:[0.0,115.0]},{positions:[0.0,90.0]},]}'
-```
+rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[94,90]},{positions:[94,115]},{positions:[94,90]},{positions:[94,115]},{positions:[94,90]}]}' 
 #### no guesture
-```bash 
-  0, 90
--45, 90
- 45, 90
-  0, 90
+```bash
+94,90
+65,90
+115,90
+65,90
+115,90
+94,90
 
-
-{points: [
-    {positions:[0.0, 90.0]},
-    {positions:[-45.0, 90.0]},
-    {positions:[0.0, 90.0]},
-    {positions:[45.0, 90.0]},
-    {positions:[0.0, 90.0]},
-]}
-rostopic pub /head/position_animator/debug_point_degrees trajectory_msgs/JointTrajectoryPoint '{positions: [180,90]}'
-
-rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[0,90]},{positions:[30,90]},{positions:[0,90]},{positions:[30,90]},{positions:[0,90]}]}'
+rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[94,90]},{positions:[65,90]},{positions:[115,90]},{positions:[65,90]},{positions:[115,90]},{positions:[94,90]}]}'  
 ```
 ### Look right
 ```bash
- 0, 90
-45, 90
-45, 90
- 0, 90
+94,90
+65,90
+65,90
+94,90
 
-rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[0,90]},{positions:[45,90]},{positions:[45,90]},{positions:[0,90]}]}'  
+rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[94,90]},{positions:[65,90]},{positions:[65,90]},{positions:[94,90]}]}'  
+```
+
+### Look left
+```bash
+94,90
+115,90
+115,90
+94,90
+
+rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[94,90]},{positions:[115,90]},{positions:[115,90]},{positions:[94,90]}]}'  
 ```
 
 
