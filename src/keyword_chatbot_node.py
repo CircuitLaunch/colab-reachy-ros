@@ -67,7 +67,7 @@ for item in (small_talk, specific):
 
 
 def request_analyzer_callback(msg):
-    key_words = ["kitchen", "bathroom", "call"]
+    key_words = ["kitchen", "bathroom", "call", "joke"]
 
     request = msg.data
     request_words = request.split()

@@ -1,0 +1,7 @@
+[ERROR] [1617228304.416298]: Error processing image: OpenCV(4.5.1) /tmp/pip-req-build-ms668fyv/opencv/modules/imgproc/src/color.cpp:182: error: (-215:Assertion failed) !_src.empty() in function 'cvtColor'
+Traceback (most recent call last):
+  File "/home/ubuntu/catkin_ws/src/colab_reachy_ros/src/face_and_mask_detector.py", line 34, in _callback
+    locs, preds = self._detector.detect_and_predict_mask(cv_image)
+  File "/home/ubuntu/catkin_ws/src/colab_reachy_ros/src/mask_detection/detect_mask.py", line 102, in detect_and_predict_mask
+    face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+cv2.error: OpenCV(4.5.1) /tmp/pip-req-build-ms668fyv/opencv/modules/imgproc/src/color.cpp:182: error: (-215:Assertion failed) !_src.empty() in function 'cvtColor'

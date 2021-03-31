@@ -36,7 +36,7 @@ class ListenerNode:
             while not rospy.is_shutdown():
                 # Obtain audio from microphone
                 try:
-                    audio = self._recognizer.listen(source, timeout=self._microphone_timeout)
+                    audio = self._recognizer.listen(source, timeout=self._microphone_timeout, phrase_time_limit=5)
                 except sr.WaitTimeoutError:
                     rospy.logwarn("No audio heard within timeout")
                 else:
