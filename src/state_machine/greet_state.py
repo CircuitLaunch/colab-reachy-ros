@@ -45,13 +45,12 @@ class Greet(smach.State):
         )
 
         self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
-        # self._head_publisher = rospy.Publisher("/head/position_animator", JointTrajectory, queue_size=1)
 
         self._right_arm_commander = moveit_commander.MoveGroupCommander("right_arm",  wait_for_servers=60)
         load_joint_configurations_from_file(self._right_arm_commander)
 
         # this publisher moves the reachy's head around
-        # self._head_publisher = rospy.Publisher("/head/position_animator_debug_degrees", JointTrajectory, queue_size=1)
+        self._head_publisher = rospy.Publisher("/head/position_animator_debug_degrees", JointTrajectory, queue_size=1)
 
 
 
