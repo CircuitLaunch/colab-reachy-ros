@@ -42,7 +42,7 @@ class ReSpeakerNode:
 
     def __del__(self):
         try:
-            os.remove(self._filename)
+            os.remove(self._speech_filename)
             os.remove("speech0.mp3")
         except FileNotFoundError:
             pass
@@ -77,9 +77,9 @@ class ReSpeakerNode:
     def _speak_callback(self, msg: String):
         with self._mutex:
             speech = gTTS(text=msg.data, lang=self._language, slow=False)
-            speech.save(self._filename)
-            playsound(self._filename)
-            os.remove(self._filename)
+            speech.save(self._speech_filename)
+            playsound(self._speech_filename)
+            os.remove(self._speech_filename)
             rospy.loginfo(f"Said: {msg.data}")
 
 
