@@ -106,6 +106,8 @@ class Greet(smach.State):
         if not self._right_arm_overheating:
             self._right_arm_gesture(poses)
 
+        rospy.sleep(2)
+
         with self._mutex:  # Lock to prevent detection variables from changing in this block
             if self.preempt_requested():
                 return "preempted"

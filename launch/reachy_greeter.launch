@@ -94,7 +94,7 @@
     <arg name="right_arm" value="$(arg right_arm)" />
     <arg name="allow_trajectory_execution" value="true"/>
     <arg name="fake_execution" value="false"/>
-    <arg name="info" value="true"/>
+    <arg name="info" value="$(arg moveit_debug)"/>
     <arg name="debug" value="$(arg moveit_debug)"/>
     <arg name="pipeline" value="$(arg moveit_pipeline)"/>
   </include>
