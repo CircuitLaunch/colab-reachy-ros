@@ -69,10 +69,10 @@ class HasMask(smach.State):
             if self._keywords == "goodbye":
                 return "goodbye"
 
-            if self._detected_faces == 0:
-                return "nobody_here"
+            # if self._detected_faces == 0:
+            #     return "nobody_here"
 
-            if not self._everybody_masked:
-                return "one_not_masked"
+            # if not self._everybody_masked:
+            #     return "one_not_masked"
 
             rospy.sleep(0.5)
