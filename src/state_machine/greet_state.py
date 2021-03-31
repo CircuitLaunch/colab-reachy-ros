@@ -24,9 +24,11 @@ class Greet(smach.State):
 
         # creating a variable to hold the yes gesture animation
         #       for the array of points
-        #       [trajectory_msgs/JointTrajectory Documentation](http://docs.ros.org/en/api/trajectory_msgs/html/msg/JointTrajectory.html)
+        #       [trajectory_msgs/JointTrajectory Documentation]
+        # (http://docs.ros.org/en/api/trajectory_msgs/html/msg/JointTrajectory.html)
         #       for the indivitual points
-        #       [trajectory_msgs/JointTrajectoryPoint Documentation](http://docs.ros.org/en/melodic/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
+        #       [trajectory_msgs/JointTrajectoryPoint Documentation]
+        # (http://docs.ros.org/en/melodic/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
         #       simulates head shaking yes motion up and down
         self._head_yes_gesture = create_head_animation(
             [[90.0, 90.0], [90.0, 115.0], [90.0, 90.0], [90.0, 115.0], [90.0, 90.0]]

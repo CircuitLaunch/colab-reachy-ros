@@ -25,7 +25,7 @@ class HasMask(smach.State):
             "/mask_detector/faces_detected", FaceAndMaskDetections, self._face_mask_callback, queue_size=10
         )
 
-        self._keyword_subscriber = rospy.Subscriber("/keyword", String, self._keyword_callback, queue_size=10)
+        self._keyword_subscriber = rospy.Subscriber("/voice_command", String, self._keyword_callback, queue_size=10)
 
         self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
 
