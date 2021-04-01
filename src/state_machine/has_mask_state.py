@@ -56,7 +56,7 @@ class HasMask(smach.State):
             self._speech_publisher.publish("What else can I do for you?")
 
         self._keywords = None
-        while not self._keywords:
+        while True:
             if self.preempt_requested():
                 return "preempted"
 
