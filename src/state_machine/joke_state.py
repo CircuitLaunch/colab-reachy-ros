@@ -31,9 +31,9 @@ class Joke(smach.State):
             return "preempted"
 
         joke = random.choice(self._joke_list)
-        self._speech_publisher.publish(joke[1])  # question
+        self._speech_publisher.publish(joke[0])  # question
         rospy.sleep(2)
-        self._speech_publisher.publish(joke[2])  # punch
+        self._speech_publisher.publish(joke[1])  # punch
 
         rospy.sleep(10)
         return "completed"
