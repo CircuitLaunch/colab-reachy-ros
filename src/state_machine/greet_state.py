@@ -20,7 +20,7 @@ class Greet(smach.State):
         self._detected_faces = None
         self._detected_masks = None
 
-        self._right_arm_overheating = False
+        self._left_arm_overheating = False
 
         # creating a variable to hold the yes gesture animation
         #       for the array of points
@@ -37,17 +37,17 @@ class Greet(smach.State):
         self._face_mask_subscriber = rospy.Subscriber(
             "/mask_detector/faces_detected", FaceAndMaskDetections, self._face_mask_callback, queue_size=10
         )
-        self._right_arm_temperature_subscriber = rospy.Subscriber(
-            "/right_arm_controller/joint_temperatures",
+        self._left_arm_temperature_subscriber = rospy.Subscriber(
+            "/left_arm_controller/joint_temperatures",
             JointTemperatures,
-            self._right_arm_temperature_callback,
+            self._left_arm_temperature_callback,
             queue_size=10,
         )
 
         self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
 
-        self._right_arm_commander = moveit_commander.MoveGroupCommander("right_arm", wait_for_servers=60)
-        load_joint_configurations_from_file(self._right_arm_commander)
+        self._left_arm_commander = moveit_commander.MoveGroupCommander("left_arm", wait_for_servers=60)
+        load_joint_configurations_from_file(self._left_arm_commander)
 
         # this publisher moves the reachy's head around
         self._head_publisher = rospy.Publisher("/head/position_animator_debug_degrees", JointTrajectory, queue_size=1)
@@ -57,35 +57,35 @@ class Greet(smach.State):
             self._detected_faces = data.faces
             self._detected_masks = data.masks
 
-    def _right_arm_temperature_callback(self, data: JointTemperatures):
+    def _left_arm_temperature_callback(self, data: JointTemperatures):
         overheating = False
         for temp in data.temperature:
             if temp > 45:
                 overheating = True
 
-        self._right_arm_overheating = overheating
+        self._left_arm_overheating = overheating
 
-    def _right_arm_gesture(self, poses: List[str]):
+    def _left_arm_gesture(self, poses: List[str]):
         # Set arm stiff
-        rospy.wait_for_service("/right_arm_controller/set_arm_compliant")  # TODO: Remove this? Add a timeout?
-        compliance_service = rospy.ServiceProxy("/right_arm_controller/set_arm_compliant", SetBool)
+        rospy.wait_for_service("/left_arm_controller/set_arm_compliant")  # TODO: Remove this? Add a timeout?
+        compliance_service = rospy.ServiceProxy("/left_arm_controller/set_arm_compliant", SetBool)
         compliance_service(False)
 
         for pose in poses:
-            if self._right_arm_overheating:
-                rospy.logwarn("right arm too hot, aborting gesture")
+            if self._left_arm_overheating:
+                rospy.logwarn("left arm too hot, aborting gesture")
                 break
             elif self.preempt_requested():
                 break
-            # move right arm to pose (blocking)
-            self._right_arm_commander.set_named_target(pose)
-            self._right_arm_commander.go(wait=True)
-            self._right_arm_commander.stop()
+            # move left arm to pose (blocking)
+            self._left_arm_commander.set_named_target(pose)
+            self._left_arm_commander.go(wait=True)
+            self._left_arm_commander.stop()
 
         # Move to rest position and set arm compliant
-        self._right_arm_commander.set_named_target("right_rest")
-        self._right_arm_commander.go(wait=True)
-        self._right_arm_commander.stop()
+        self._left_arm_commander.set_named_target("left_rest")
+        self._left_arm_commander.go(wait=True)
+        self._left_arm_commander.stop()
         compliance_service(True)
 
     def execute(self, userdata: smach.UserData):
@@ -99,13 +99,16 @@ class Greet(smach.State):
         rospy.sleep(0.05)  # If the function exits immediately, the publishes won't happen
 
         # shake the head yes to indicate that reachy is listening
-        self._head_publisher.publish(self._head_yes_gesture)
-        rospy.loginfo("Head gesture: 'YES'")
+        try:
+            self._head_publisher.publish(self._head_yes_gesture)
+            rospy.loginfo("Head gesture: 'YES'")
+        except Exception as e:
+            rospy.logerr(f"Error performing head gesture: {e}", exc_info=True)
 
-        poses = ["hello_01", "hello_02"]
-        if not self._right_arm_overheating:
+        poses = ["left_hello_01", "left_hello_02"]
+        if not self._left_arm_overheating:
             try:
-                self._right_arm_gesture(poses)
+                self._left_arm_gesture(poses)
             except Exception as e:
                 rospy.logerr(f"Error performing arm gesture: {e}", exc_info=True)
 
