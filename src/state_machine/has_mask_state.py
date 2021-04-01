@@ -29,7 +29,6 @@ class HasMask(smach.State):
             "/mask_detector/faces_detected", FaceAndMaskDetections, self._face_mask_callback, queue_size=10
         )
 
-        self._keyword_subscriber = rospy.Subscriber("/voice_command", String, self._keyword_callback, queue_size=10)
         self._request_analyzer_sub = rospy.Subscriber("/respeaker/microphone_speech", String, self._req_callback)
         self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
 
@@ -96,23 +95,18 @@ class HasMask(smach.State):
 
         for word in request_words:
             if word in key_words:
-                command = word
-                rospy.loginfo('Keyword "' + command + '" detected.')
-                self.pub_1.publish(command)
+                self._keywords = word
+                rospy.loginfo('Keyword "' + word + '" detected.')
                 return
 
         response = self.chatbot.get_response(request)
         rospy.loginfo("Chatbot generated response" + response.text)
-        self.pub_2.publish(response.text)
 
     def _face_mask_callback(self, data: FaceAndMaskDetections):
         self._detected_faces = data.faces
         self._detected_masks = data.masks
 
         self._everybody_masked = self._detected_faces == self._detected_masks
-
-    def _keyword_callback(self, data: String):
-        self._keywords = data.data
 
     def execute(self, userdata: smach.UserData):
         # Userdata variables are accessed with the . operator
