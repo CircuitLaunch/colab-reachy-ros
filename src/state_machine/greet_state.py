@@ -111,7 +111,7 @@ class Greet(smach.State):
                 rospy.logerr(f"Error performing arm gesture: {e}", exc_info=True)
         '''
 
-        rospy.sleep(5)
+        rospy.sleep(10)
 
         with self._mutex:  # Lock to prevent detection variables from changing in this block
             if self.preempt_requested():
