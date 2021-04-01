@@ -30,12 +30,8 @@ class HasMask(smach.State):
         )
 
         self._keyword_subscriber = rospy.Subscriber("/voice_command", String, self._keyword_callback, queue_size=10)
-<<<<<<< HEAD
         self._request_analyzer_sub = rospy.Subscriber("/respeaker/microphone_speech", String, self._req_callback)
         self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
-
-        self.pub_1 = rospy.Publisher("voice_command", String, queue_size=10)
-        self.pub_2 = rospy.Publisher("speak", String, queue_size=10)
 
         self.chatbot = ChatBot(
             name="Reachy",
@@ -108,8 +104,6 @@ class HasMask(smach.State):
         response = self.chatbot.get_response(request)
         rospy.loginfo("Chatbot generated response" + response.text)
         self.pub_2.publish(response.text)
-=======
->>>>>>> 9e44edc0ba44a67dfb3fd153813aff497912cce5
 
     def _face_mask_callback(self, data: FaceAndMaskDetections):
         self._detected_faces = data.faces

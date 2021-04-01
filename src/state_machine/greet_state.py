@@ -44,8 +44,8 @@ class Greet(smach.State):
             queue_size=10,
         )
 
-        self._left_arm_commander = moveit_commander.MoveGroupCommander("left_arm", wait_for_servers=60)
-        load_joint_configurations_from_file(self._left_arm_commander)
+        # self._left_arm_commander = moveit_commander.MoveGroupCommander("left_arm", wait_for_servers=60)
+        # load_joint_configurations_from_file(self._left_arm_commander)
 
         # this publisher moves the reachy's head around
         self._head_publisher = rospy.Publisher("/head/position_animator_debug_degrees", JointTrajectory, queue_size=1)
@@ -102,12 +102,14 @@ class Greet(smach.State):
         except Exception as e:
             rospy.logerr(f"Error performing head gesture: {e}", exc_info=True)
 
+        '''
         poses = ["left_hello_01", "left_hello_02"]
         if not self._left_arm_overheating:
             try:
                 self._left_arm_gesture(poses)
             except Exception as e:
                 rospy.logerr(f"Error performing arm gesture: {e}", exc_info=True)
+        '''
 
         rospy.sleep(5)
 
