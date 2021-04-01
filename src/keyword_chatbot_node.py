@@ -9,7 +9,7 @@ from chatterbot.trainers import ListTrainer  # , ChatterBotCorpusTrainer
 
 from std_msgs.msg import String
 
-
+'''
 chatbot = ChatBot(
     name="Reachy",
     read_only=True,
@@ -65,7 +65,7 @@ list_trainer = ListTrainer(chatbot)
 
 for item in (small_talk, specific):
     list_trainer.train(item)
-
+'''
 
 def request_analyzer_callback(msg):
     key_words = ["kitchen", "bathroom", "call", "joke", "goodbye"]
@@ -80,9 +80,9 @@ def request_analyzer_callback(msg):
             pub_1.publish(command)
             return
 
-    response = chatbot.get_response(request)
-    rospy.loginfo("Chatbot generated response" + response.text)
-    pub_2.publish(response.text)
+    # response = chatbot.get_response(request)
+    # rospy.loginfo("Chatbot generated response" + response.text)
+    # pub_2.publish(response.text)
 
 
 if __name__ == "__main__":
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     rospy.init_node("keyword_chatbot_node")
 
     pub_1 = rospy.Publisher("voice_command", String, queue_size=10)
-    pub_2 = rospy.Publisher("speak", String, queue_size=10)
+    # pub_2 = rospy.Publisher("speak", String, queue_size=10)
 
     sub = rospy.Subscriber("/respeaker/microphone_speech", String, request_analyzer_callback)
     rospy.spin()

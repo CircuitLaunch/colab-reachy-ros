@@ -1,6 +1,6 @@
 import rospy
 import smach
-from std_msgs.msg import String
+from state_machine.helper_functions import say_something
 from colab_reachy_ros.msg import FaceAndMaskDetections
 
 
@@ -21,8 +21,6 @@ class NoMask(smach.State):
             "/mask_detector/faces_detected", FaceAndMaskDetections, self._face_mask_callback, queue_size=10
         )
 
-        self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
-
     def _face_mask_callback(self, data: FaceAndMaskDetections):
         self._detected_faces = data.faces
         self._detected_masks = data.masks
@@ -39,7 +37,7 @@ class NoMask(smach.State):
             # Smach does NOT handle this itself
             if self.preempt_requested():
                 return "preempted"
-            self._speech_publisher.publish("I see that someone is not wearing a mask. Please wear a mask.")
+            say_something("I see that someone is not wearing a mask. Please wear a mask.")
             rospy.sleep(10)
 
         if self._detected_faces > 0:

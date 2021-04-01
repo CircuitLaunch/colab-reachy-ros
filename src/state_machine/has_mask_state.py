@@ -1,6 +1,6 @@
 import rospy
 import smach
-from std_msgs.msg import String
+from state_machine.helper_functions import say_something
 from colab_reachy_ros.msg import FaceAndMaskDetections
 
 
@@ -27,8 +27,6 @@ class HasMask(smach.State):
 
         self._keyword_subscriber = rospy.Subscriber("/voice_command", String, self._keyword_callback, queue_size=10)
 
-        self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
-
     def _face_mask_callback(self, data: FaceAndMaskDetections):
         self._detected_faces = data.faces
         self._detected_masks = data.masks
@@ -48,12 +46,12 @@ class HasMask(smach.State):
 
         if not userdata.conversation_started:
             userdata.conversation_started = True
-            self._speech_publisher.publish("Thank you for wearing a mask.")
-            self._speech_publisher.publish("How can I help you?")
-            self._speech_publisher.publish("This is what I can do:")
-            self._speech_publisher.publish("I can tell you a joke or direct you to the kitchen")
+            say_something("Thank you for wearing a mask.")
+            say_something("How can I help you?")
+            say_something("This is what I can do:")
+            say_something("I can tell you a joke or direct you to the kitchen")
         else:
-            self._speech_publisher.publish("What else can I do for you?")
+            say_something("What else can I do for you?")
 
         self._keywords = None
         while True:
