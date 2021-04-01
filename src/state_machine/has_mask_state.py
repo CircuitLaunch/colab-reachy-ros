@@ -136,6 +136,7 @@ class HasMask(smach.State):
                         response = self.chatbot.get_response(self._heard_sentence)
                         rospy.loginfo("Chatbot generated response" + response.text)
                         say_something(response.text)
+                        self._heard_sentence = None
 
             # if self._detected_faces == 0:
             #     return "nobody_here"

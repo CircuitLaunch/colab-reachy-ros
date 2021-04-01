@@ -75,7 +75,7 @@ class ReSpeakerNode:
                             self._publisher.publish(listened)
 
                 self._rate.sleep()
-    
+
     def _speak_callback(self, req: SpeakRequest):
         with self._mutex:
             speech = gTTS(text=req.sentence, lang=self._language, slow=False)
