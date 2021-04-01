@@ -3,6 +3,7 @@ import smach
 from state_machine.helper_functions import say_something
 from std_msgs.msg import String
 from colab_reachy_ros.msg import FaceAndMaskDetections
+import threading
 
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer  # , ChatterBotCorpusTrainer
@@ -29,8 +30,10 @@ class HasMask(smach.State):
             "/mask_detector/faces_detected", FaceAndMaskDetections, self._face_mask_callback, queue_size=10
         )
 
-        self._request_analyzer_sub = rospy.Subscriber("/respeaker/microphone_speech", String, self._req_callback)
-        self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
+        self._speech_subscriber = rospy.Subscriber("/respeaker/microphone_speech", String, self._req_callback)
+        self._heard_sentence = None
+        self._key_words = ["kitchen", "bathroom", "call", "joke", "goodbye"]
+        self._listen_mutex = threading.Lock()
 
         self.chatbot = ChatBot(
             name="Reachy",
@@ -88,19 +91,8 @@ class HasMask(smach.State):
             self.list_trainer.train(item)
 
     def _req_callback(self, msg):
-        key_words = ["kitchen", "bathroom", "call", "joke", "goodbye"]
-
-        request = msg.data
-        request_words = request.split()
-
-        for word in request_words:
-            if word in key_words:
-                self._keywords = word
-                rospy.loginfo('Keyword "' + word + '" detected.')
-                return
-
-        response = self.chatbot.get_response(request)
-        rospy.loginfo("Chatbot generated response" + response.text)
+        with self._listen_mutex:
+            self._heard_sentence = msg.data
 
     def _face_mask_callback(self, data: FaceAndMaskDetections):
         self._detected_faces = data.faces
@@ -125,19 +117,26 @@ class HasMask(smach.State):
         else:
             say_something("What else can I do for you?")
 
-        self._keywords = None
+        self._heard_sentence = None
         while True:
             if self.preempt_requested():
                 return "preempted"
 
-            if self._keywords == "kitchen":
-                return "kitchen"
+            with self._listen_mutex:
+                if self._heard_sentence:
+                    request_words = self._heard_sentence.split()
 
-            if self._keywords == "joke":
-                return "joke"
 
-            if self._keywords == "goodbye":
-                return "goodbye"
+                    if "kitchen" in request_words:
+                        return "kitchen"
+                    elif "joke" in request_words:
+                        return "joke"
+                    elif "goodbye" in request_words:
+                        return "goodbye"
+                    else:
+                        response = self.chatbot.get_response(self._heard_sentence)
+                        rospy.loginfo("Chatbot generated response" + response.text)
+                        say_something(response)
 
             # if self._detected_faces == 0:
             #     return "nobody_here"

@@ -82,7 +82,7 @@ class ReSpeakerNode:
             speech.save(self._speech_filename)
             playsound(self._speech_filename)
             os.remove(self._speech_filename)
-            rospy.loginfo(f"Said: {msg.data}")
+            rospy.logdebug(f"Said: {req.sentence}")
             return self._speech_response
 
 
