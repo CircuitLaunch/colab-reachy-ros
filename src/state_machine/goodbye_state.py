@@ -29,6 +29,7 @@ class Goodbye(smach.State):
         # Userdata variables are accessed with the . operator
         # You can only access the variables you specified in input_keys, output_keys and io_keys
         # Variables specified in input_keys are wrapped to be immutable
+        self._sees_a_face = True
 
         self._speech_publisher.publish("Goodbye")
 

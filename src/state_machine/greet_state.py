@@ -104,7 +104,10 @@ class Greet(smach.State):
 
         poses = ["hello_01", "hello_02"]
         if not self._right_arm_overheating:
-            self._right_arm_gesture(poses)
+            try:
+                self._right_arm_gesture(poses)
+            except Exception as e:
+                rospy.logerr(f"Error performing arm gesture: {e}", exc_info=True)
 
         rospy.sleep(2)
 

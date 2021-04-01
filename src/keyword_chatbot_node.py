@@ -32,6 +32,7 @@ chatbot = ChatBot(
 # Train the chatbot based on lists
 
 small_talk = [
+    "um",
     "hi there!",
     "hi",
     "how do you do?",
