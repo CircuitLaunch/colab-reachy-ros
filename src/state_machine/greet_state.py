@@ -109,7 +109,7 @@ class Greet(smach.State):
             except Exception as e:
                 rospy.logerr(f"Error performing arm gesture: {e}", exc_info=True)
 
-        rospy.sleep(2)
+        rospy.sleep(5)
 
         with self._mutex:  # Lock to prevent detection variables from changing in this block
             if self.preempt_requested():
