@@ -3,6 +3,9 @@ import smach
 from std_msgs.msg import String
 from colab_reachy_ros.msg import FaceAndMaskDetections
 
+from chatterbot import ChatBot
+from chatterbot.trainers import ListTrainer  # , ChatterBotCorpusTrainer
+
 
 class HasMask(smach.State):
     def __init__(self):
@@ -26,8 +29,83 @@ class HasMask(smach.State):
         )
 
         self._keyword_subscriber = rospy.Subscriber("/voice_command", String, self._keyword_callback, queue_size=10)
-
+        self._request_analyzer_sub = rospy.Subscriber("/respeaker/microphone_speech", String, self._req_callback)
         self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
+
+        self.pub_1 = rospy.Publisher("voice_command", String, queue_size=10)
+        self.pub_2 = rospy.Publisher("speak", String, queue_size=10)
+
+        self.chatbot = ChatBot(
+            name="Reachy",
+            read_only=True,
+            logic_adapters=[
+                {
+                    "import_path": "chatterbot.logic.BestMatch",
+                    "default_response": "I am sorry, I do not understand. I am still learning. Please contact somebody for further assistance.",
+                    "maximum_similarity_threshold": 0.90,
+                }
+            ],
+            trainer="chatterbot.trainers.ChatterBotCorpusTrainer",)
+
+        # Create a new trainer for the chatbot
+        # trainer = ChatterBotCorpusTrainer(chatbot)
+
+        # Train the chatbot based on the english corpus
+        # trainer.train("chatterbot.corpus.english")
+
+        # Train the chatbot based on lists
+
+        self.small_talk = [
+            "um",
+            "hi there!",
+            "hi",
+            "how do you do?",
+            "how are you?",
+            "i'm cool.",
+            "fine,you?",
+            "always cool.",
+            "i\m ok",
+            "glad to heat that",
+            "i feel awesome",
+            "excellent, glad to hear that",
+            "not so good",
+            "sorry to hear that.",
+            "what's your name?",
+            "i'm Reachy ",
+        ]
+
+        self.specific = [
+            "i want to go to bathroom",
+            "ok, follow me to the bathroom",
+            "i want to go to the kitchen",
+            "ok, follow me to the kitchen",
+            "i need to call Dan",
+            "ok, please wait while I contact Dan",
+            "i need to call Leah",
+            "ok, please wait while I contact Leah",
+        ]
+
+        self.list_trainer = ListTrainer(self.chatbot)
+
+        for item in (self.small_talk, self.specific):
+            self.list_trainer.train(item)
+
+    def _req_callback(self, msg):
+        key_words = ["kitchen", "bathroom", "call", "joke", "goodbye"]
+
+        request = msg.data
+        request_words = request.split()
+
+        for word in request_words:
+            if word in key_words:
+                command = word
+                rospy.loginfo('Keyword "' + command + '" detected.')
+                self.pub_1.publish(command)
+                return
+
+        response = self.chatbot.get_response(request)
+        rospy.loginfo("Chatbot generated response" + response.text)
+        self.pub_2.publish(response.text)
 
     def _face_mask_callback(self, data: FaceAndMaskDetections):
         self._detected_faces = data.faces
