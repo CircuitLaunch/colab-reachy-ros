@@ -126,7 +126,6 @@ class HasMask(smach.State):
                 if self._heard_sentence:
                     request_words = self._heard_sentence.split()
 
-
                     if "kitchen" in request_words:
                         return "kitchen"
                     elif "joke" in request_words:
@@ -136,7 +135,7 @@ class HasMask(smach.State):
                     else:
                         response = self.chatbot.get_response(self._heard_sentence)
                         rospy.loginfo("Chatbot generated response" + response.text)
-                        say_something(response)
+                        say_something(response.text)
 
             # if self._detected_faces == 0:
             #     return "nobody_here"
