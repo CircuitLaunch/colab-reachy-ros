@@ -1,6 +1,7 @@
 import rospy
 import smach
 from state_machine.helper_functions import say_something
+from std_msgs.msg import String
 from colab_reachy_ros.msg import FaceAndMaskDetections
 
 
