@@ -1,6 +1,6 @@
 import rospy
 import smach
-from std_msgs.msg import String
+from state_machine.helper_functions import say_something
 from geometry_msgs.msg import PoseStamped
 
 
@@ -13,7 +13,6 @@ class DirectToKitchen(smach.State):
         # io_keys is the list of state machine variables this state both reads and writes
         super().__init__(outcomes=["completed", "preempted"])
 
-        self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
         self._magni_publisher = rospy.Publisher("move_base_simple/goal", PoseStamped, queue_size=10)
 
         x, y, z, qx, qy, qz, qw = (0, -27, 0, 0, 0, 0, 1.0)  # Kitchen pose
@@ -38,7 +37,7 @@ class DirectToKitchen(smach.State):
             return "preempted"
 
         self._magni_publisher.publish(self._msg)  # Set a goal to Magni
-        self._speech_publisher.publish("Please follow me to the Kitchen")
+        say_something("Please follow me to the Kitchen")
 
         rospy.sleep(10)
         return "completed"

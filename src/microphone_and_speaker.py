@@ -5,6 +5,7 @@ import os
 import speech_recognition as sr
 from typing import Optional
 from std_msgs.msg import String
+from colab_reachy_ros.srv import Speak, SpeakRequest, SpeakResponse
 from gtts import gTTS
 from playsound import playsound
 import threading
@@ -16,6 +17,7 @@ class ReSpeakerNode:
 
         self._language = "en-us"
         self._speech_filename = "speech1.mp3"
+        self._speech_response = SpeakResponse()
 
         if microphone_name:
             try:
@@ -38,7 +40,7 @@ class ReSpeakerNode:
         self._publisher = rospy.Publisher(name + "/microphone_speech", String, queue_size=10)
         self._rate = rospy.Rate(frequency)
 
-        self._subscriber = rospy.Subscriber("speak", String, self._speak_callback)
+        self._service = rospy.Service("/speak", Speak, self._speak_callback)
 
     def __del__(self):
         try:
@@ -74,13 +76,14 @@ class ReSpeakerNode:
 
                 self._rate.sleep()
     
-    def _speak_callback(self, msg: String):
+    def _speak_callback(self, req: SpeakRequest):
         with self._mutex:
-            speech = gTTS(text=msg.data, lang=self._language, slow=False)
+            speech = gTTS(text=req.sentence, lang=self._language, slow=False)
             speech.save(self._speech_filename)
             playsound(self._speech_filename)
             os.remove(self._speech_filename)
             rospy.loginfo(f"Said: {msg.data}")
+            return self._speech_response
 
 
 if __name__ == "__main__":

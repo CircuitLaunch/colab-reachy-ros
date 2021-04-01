@@ -1,7 +1,7 @@
 import rospy
 import smach
 import threading
-from std_msgs.msg import String
+from state_machine.helper_functions import say_something
 from trajectory_msgs.msg import JointTrajectory
 from colab_reachy_ros.msg import FaceAndMaskDetections, JointTemperatures
 from std_srvs.srv import SetBool
@@ -43,8 +43,6 @@ class Greet(smach.State):
             self._left_arm_temperature_callback,
             queue_size=10,
         )
-
-        self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
 
         self._left_arm_commander = moveit_commander.MoveGroupCommander("left_arm", wait_for_servers=60)
         load_joint_configurations_from_file(self._left_arm_commander)
@@ -94,8 +92,7 @@ class Greet(smach.State):
         if self.preempt_requested():
             return "preempted"
 
-        self._speech_publisher.publish("Hi, I'm Reachy!")
-        # self._head_publisher.publish(a_trajectory)
+        say_something("Hi, I'm Reachy!")
         rospy.sleep(0.05)  # If the function exits immediately, the publishes won't happen
 
         # shake the head yes to indicate that reachy is listening

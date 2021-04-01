@@ -1,6 +1,6 @@
 import rospy
 import smach
-from std_msgs.msg import String
+from state_machine.helper_functions import say_something
 import random
 
 
@@ -12,8 +12,6 @@ class Joke(smach.State):
         # output_keys is the list of state machine variables this state writes but does not read
         # io_keys is the list of state machine variables this state both reads and writes
         super().__init__(outcomes=["completed", "preempted"])
-
-        self._speech_publisher = rospy.Publisher("/speak", String, queue_size=1)
 
         self._joke_list = [
             ["What do you call a robot who always runs into the wall?", "Wall-E"],
@@ -31,9 +29,9 @@ class Joke(smach.State):
             return "preempted"
 
         joke = random.choice(self._joke_list)
-        self._speech_publisher.publish(joke[0])  # question
+        say_something(joke[0])  # question
         rospy.sleep(2)
-        self._speech_publisher.publish(joke[1])  # punch
+        say_something(joke[1])  # punch
 
         rospy.sleep(10)
         return "completed"
