@@ -161,22 +161,22 @@ rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajecto
 ```
 ### Look right
 ```bash
-94,90
-65,90
-65,90
-94,90
+94,80
+65,80
+65,80
+94,80
 
-rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[94,90]},{positions:[65,90]},{positions:[65,90]},{positions:[94,90]}]}'  
+rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[94,80]},{positions:[65,80]},{positions:[65,80]},{positions:[94,80]}]}'  
 ```
 
 ### Look left
 ```bash
-94,90
-115,90
-115,90
-94,90
+94, 80
+115,80
+115,80
+94, 80
 
-rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[94,90]},{positions:[115,90]},{positions:[115,90]},{positions:[94,90]}]}'  
+rostopic pub /head/position_animator_debug_degrees trajectory_msgs/JointTrajectory '{points:[{positions:[94,80]},{positions:[115,80]},{positions:[115,80]},{positions:[94,80]}]}'  
 ```
 
 
