@@ -12,8 +12,8 @@ ros::NodeHandle  nh;
 
 Servo servo1;
 Servo servo2;
-int head_yaw_offset  = 0;
-int head_tilt_offset = 90;
+int head_yaw_offset  = 94;
+int head_tilt_offset = 80;
 //start tilt 90+25
 //end tilt 90-15
 void servo1_cb( const std_msgs::UInt16&  cmd_msg){
