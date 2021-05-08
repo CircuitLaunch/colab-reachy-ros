@@ -31,6 +31,19 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+################################################################################
+# UPDATE LOG
+#
+# Edward Janne (edj 2021-05-08)
+# This file was copied from reachy_arm_controller.py and modified to unify the
+# left and right arm control functionality into one node. The reason for doing
+# this is that the Pollen Robotics provided reachy module is not thread-safe
+# and therefore performs unpredictably when accessed from two separate nodes
+# which are necessarily operating on two independent threads. Unifying permits
+# us to implment synchronization between asynchronous callbacks from ROS.
+#
+################################################################################
+
 import rospy
 import actionlib
 import bisect
@@ -52,6 +65,9 @@ from colab_reachy_ros.msg import JointTemperatures
 from rospy import ROSException
 from collections import OrderedDict
 from typing import List
+# Required to synchronize access to reachy from multiple asynchronous callbacks
+# (edj 2021-05-08)
+from threading import Lock
 
 DEG_TO_RAD = 0.0174527
 
@@ -79,34 +95,71 @@ def patch_force_gripper(forceGripper):
 reachy.parts.arm.RightForceGripper = patch_force_gripper(reachy.parts.arm.RightForceGripper)
 reachy.parts.arm.LeftForceGripper = patch_force_gripper(reachy.parts.arm.LeftForceGripper)
 
+# Updated class name to reflect change in paradigm
+# class ReachyArmNode:
+class ReachyArmController:
 
-class ReachyArmNode:
+    # Introducing single reachy reference as a class variable to be shared by
+    # all instances, and synchronized by a mutex (edj 2021-05-08)
+    _unified_reachy = None
+    _unified_reachy_mutex = Lock()
+
+    @property
+    def _reachy_mutex(self):
+        return self.__class__._unified_reachy_mutex
+
+    @property
+    def _reachy(self):
+        with self._reachy_mutex:
+            if self.__class__._unified_reachy == None:
+                self.__class__._unified_reachy = reachy.Reachy(
+                    right_arm=reachy.parts.RightArm(io=rospy.get_param(f"~right_io"), hand="force_gripper"),
+                    left_arm=reachy.parts.LeftArm(io=rospy.get_param(f"~left_io"), hand="force_gripper")
+                )
+        return self.__class__._unified_reachy
+
+    # Why were these declared class variables? (edj 2021-05-08)
+    """
     _arm_feedback = FollowJointTrajectoryFeedback()
     _arm_result = FollowJointTrajectoryResult()
     _joint_state = JointState()
     _joint_temperatures = JointTemperatures()
+    """
 
-    def __init__(self, name):
-        # Change this to be able to set right or left arm, and provide io parameter as an argument
-        self._side = rospy.get_param("~side")
-        self._io = rospy.get_param("~io")
+    def __init__(self, name, side):
+        # Made these instance variables (edj 2021-05-08)
+        self._arm_feedback = FollowJointTrajectoryFeedback()
+        self._arm_result = FollowJointTrajectoryResult()
+        self._joint_state = JointState()
+        self._joint_temperatures = JointTemperatures()
+
+        # Redundant (edj 2021-05-08)
+        # self._side = rospy.get_param("~side")
+        # self._io = rospy.get_param("~io")
+
+        self._side = side
         self._name = name
-        self._update_rate = rospy.get_param("~rate")
+        # Factored out into main() (edj 2021-05-08)
+        # self._update_rate = rospy.get_param("~rate")
         self._arm_continuous = rospy.get_param("~arm_continuous_trajectories")
 
         if self._side == "right":
-            self._reachy = reachy.Reachy(right_arm=reachy.parts.RightArm(io=self._io, hand="force_gripper"))
+            # Factored out into a shared class variable (edj 2021-05-08)
+            # self._reachy = reachy.Reachy(right_arm=reachy.parts.RightArm(io=self._io, hand="force_gripper"))
             dxl_list = self._reachy.right_arm.motors
             side_letter = "r"
         elif self._side == "left":
-            self._reachy = reachy.Reachy(left_arm=reachy.parts.LeftArm(io=self._io, hand="force_gripper"))
+            # Factored out into a shared class variable (edj 2021-05-08)
+            # self._reachy = reachy.Reachy(left_arm=reachy.parts.LeftArm(io=self._io, hand="force_gripper"))
             dxl_list = self._reachy.left_arm.motors
             side_letter = "l"
         else:
             raise ValueError("'side' private parameter must be 'left' or 'right")
 
         for m in dxl_list:
-            m.compliant = True
+            # Access synchronization (edj 2021-05-08)
+            with self._reachy_mutex:
+                m.compliant = True
 
         # Motors are of the Reachy motor wrapper type:
         # https://github.com/pollen-robotics/reachy/blob/master/software/reachy/parts/motor.py
@@ -122,24 +175,30 @@ class ReachyArmNode:
         ]
         self._dxl_motors = dict(zip(self._ros_motor_names, dxl_list))
 
-        self._joint_state_publisher = rospy.Publisher(f"{self._name}/joint_states", JointState, queue_size=10)
+        # To maintain the correct topic name (edj 2021-05-08)
+        self._joint_state_publisher = rospy.Publisher(f"{self._side}_arm_controller/joint_states", JointState, queue_size=10)
         self._joint_temp_publisher = rospy.Publisher(
-            f"{self._name}/joint_temperatures", JointTemperatures, queue_size=10
+            # To maintain the correct topic name (edj 2021-05-08)
+            f"{self._side}_arm_controller/joint_temperatures", JointTemperatures, queue_size=10
         )
-        self._update_spinner = rospy.Rate(self._update_rate)
+        # Factored out into main() (edj 2021-05-08)
+        # self._update_spinner = rospy.Rate(self._update_rate)
 
         self._arm_compliant = True
         self._gripper_compliant = True
 
         self._arm_compliance_service = rospy.Service(
-            f"{self._name}/set_arm_compliant", SetBool, self._set_arm_compliance
+            # To maintain the correct topic name (edj 2021-05-08)
+            f"{self._side}_arm_controller/set_arm_compliant", SetBool, self._set_arm_compliance
         )
         self._gripper_compliance_service = rospy.Service(
-            f"{self._name}/set_gripper_compliant", SetBool, self._set_gripper_compliance
+            # To maintain the correct topic name (edj 2021-05-08)
+            f"{self._side}_arm_controller/set_gripper_compliant", SetBool, self._set_gripper_compliance
         )
 
         self._arm_action_server = actionlib.SimpleActionServer(
-            f"{self._name}/follow_joint_trajectory",
+            # To maintain the correct action name (edj 2021-05-08)
+            f"{self._side}_arm_controller/follow_joint_trajectory",
             FollowJointTrajectoryAction,
             execute_cb=self._execute_arm_cb,
             auto_start=False,
@@ -149,46 +208,65 @@ class ReachyArmNode:
         self._joint_state.name = self._ros_motor_names
         self._joint_temperatures.name = self._ros_motor_names
 
-    def spin(self):
-        while not rospy.is_shutdown():
-            self._joint_state.header.stamp = rospy.Time.now()
+    # Factored out into main() (edj 2021-05-08)
+    # def spin(self):
+    #     while not rospy.is_shutdown()
+
+    def report_joint_state(self):
+        self._joint_state.header.stamp = rospy.Time.now()
+        # Access synchronization (edj 2021-05-08)
+        with self._reachy_mutex:
             self._joint_state.position = [
                 self._dxl_motors[m].present_position * DEG_TO_RAD for m in self._ros_motor_names
             ]
-            try:
-                self._joint_state_publisher.publish(self._joint_state)
-            except ROSException:
-                pass
+        try:
+            self._joint_state_publisher.publish(self._joint_state)
+        except ROSException:
+            pass
 
-            self._joint_temperatures.header.stamp = rospy.Time.now()
+        self._joint_temperatures.header.stamp = rospy.Time.now()
+        # Access synchronization (edj 2021-05-08)
+        with self._reachy_mutex:
             self._joint_temperatures.temperature = [self._dxl_motors[m].temperature for m in self._ros_motor_names]
-            try:
-                self._joint_temp_publisher.publish(self._joint_temperatures)
-            except ROSException:
-                pass
+        try:
+            self._joint_temp_publisher.publish(self._joint_temperatures)
+        except ROSException:
+            pass
 
-            self._update_spinner.sleep()
+        # Factored out into main() (edj 2021-05-08)
+        # self._update_spinner.sleep()
 
     def shutdown_hook(self):
-        for m in self._dxl_motors.values():
-            m.compliant = True
+        # Access synchronization (edj 2021-05-08)
+        with self._reachy_mutex:
+            for m in self._dxl_motors.values():
+                m.compliant = True
         rospy.sleep(0.2)
 
     def _set_arm_compliance(self, request: SetBool):
         self._arm_compliant = request.data
         for m in self._ros_motor_names[0:7]:  # End index is not included
-            self._dxl_motors[m].compliant = request.data
-        msg = f"Arm compliance has been {'enabled' if request.data else 'disabled'}"
+            # Access synchronization (edj 2021-05-08)
+            with self._reachy_mutex:
+                self._dxl_motors[m].compliant = request.data
+        # Indicate which side is reporting (edj 2021-05-08)
+        msg = f"{self._side} arm compliance has been {'enabled' if request.data else 'disabled'}"
         return SetBoolResponse(success=True, message=msg)
 
     def _set_gripper_compliance(self, request: SetBool):
         self._gripper_compliant = request.data
-        self._dxl_motors[self._ros_motor_names[7]].compliant = request.data
-        msg = f"Gripper compliance has been {'enabled' if request.data else 'disabled'}"
+        # Access synchronization (edj 2021-05-08)
+        with self._reachy_mutex:
+            self._dxl_motors[self._ros_motor_names[7]].compliant = request.data
+        # Indicate which side is reporting (edj 2021-05-08)
+        msg = f"{self._side} gripper compliance has been {'enabled' if request.data else 'disabled'}"
         return SetBoolResponse(success=True, message=msg)
 
     def _get_current_positions(self, joint_names: List[str]):
-        return [self._dxl_motors[joint].present_position / DEG_TO_RAD for joint in joint_names]
+        # Access synchronization (edj 2021-05-08)
+        with self._reachy_mutex:
+            present_position = [self._dxl_motors[joint].present_position / DEG_TO_RAD for joint in joint_names]
+        return present_position
 
     def _update_feedback(self, cmd_point: JointTrajectoryPoint, joint_names: List[str], cur_time: float):
         self._arm_feedback.header.stamp = rospy.Duration.from_sec(rospy.get_time())
@@ -202,21 +280,28 @@ class ReachyArmNode:
         ))
         self._arm_feedback.error.time_from_start = rospy.Duration.from_sec(cur_time)
         self._arm_action_server.publish_feedback(self._arm_feedback)
-        rospy.logdebug(f"Present positions: {self._get_current_positions(joint_names)}")
+        # Indicate which side is reporting (edj 2021-05-08)
+        rospy.logdebug(f"{self._side}_arm_controller: Present positions: {self._get_current_positions(joint_names)}")
 
     def _command_joints(self, joint_names: List[str], point: JointTrajectoryPoint):
-        rospy.logdebug(f"Setting motors to {point.positions}")
+        # Indicate which side is reporting (edj 2021-05-08)
+        rospy.logdebug(f"{self._side}_arm_controller: Setting motors to {point.positions}")
         if len(joint_names) != len(point.positions):
-            rospy.logerr("Point is invalid: len(joint_names) != len(point.positions)")
+            # Indicate which side is reporting (edj 2021-05-08)
+            rospy.logerr(f"{self._side}_arm_controller: Point is invalid: len(joint_names) != len(point.positions)")
             return False
         for i, m in enumerate(joint_names):
             if m not in self._dxl_motors.keys():
-                rospy.logerr(f"Point is invalid: joint {m} not found")
+                # Indicate which side is reporting (edj 2021-05-08)
+                rospy.logerr(f"{self._side}_arm_controller: Point is invalid: joint {m} not found")
                 return False
             if self._arm_compliant:
-                rospy.logerr("Arm is compliant, the trajectory cannot execute")
+                # Indicate which side is reporting (edj 2021-05-08)
+                rospy.logerr(f"{self._side}_arm_controller: Arm is compliant, the trajectory cannot execute")
                 return False
-            self._dxl_motors[m].goal_position = float(point.positions[i]) / DEG_TO_RAD
+            # Access synchronization (edj 2021-05-08)
+            with self._reachy_mutex:
+                self._dxl_motors[m].goal_position = float(point.positions[i]) / DEG_TO_RAD
         return True
 
     def _determine_trajectory_dimensions(self, trajectory_points: List[JointTrajectoryPoint]):
@@ -278,7 +363,8 @@ class ReachyArmNode:
 
         for jnt in joint_names:
             if jnt not in self._dxl_motors.keys():
-                rospy.logerr(f"{self._name}: Trajectory Aborted - Provided Invalid Joint Name {jnt}")
+                # Indicate which side is reporting (edj 2021-05-08)
+                rospy.logerr(f"{self._side}_arm_controller: Trajectory Aborted - Provided Invalid Joint Name {jnt}")
                 self._arm_result.error_code = self._arm_result.INVALID_JOINTS
                 self._arm_action_server.set_aborted(self._arm_result)
                 return
@@ -291,13 +377,16 @@ class ReachyArmNode:
 
         num_points = len(trajectory_points)
         if num_points == 0:
-            rospy.logerr(f"{self._name}: Empty Trajectory")
+            # Indicate which side is reporting (edj 2021-05-08)
+            rospy.logerr(f"{self._side}_arm_controller: Empty Trajectory")
             self._arm_action_server.set_aborted()
             return
         rospy.logwarn(
-            f"{self._name}: Executing requested joint trajectory {trajectory_points[-1].time_from_start.to_sec()} sec"
+            # Indicate which side is reporting (edj 2021-05-08)
+            f"{self._side}_arm_controller: Executing requested joint trajectory {trajectory_points[-1].time_from_start.to_sec()} sec"
         )
-        control_rate = rospy.Rate(self._update_rate)
+        # Factored out
+        control_rate = rospy.Rate(rospy.get_param("~rate"))
 
         if num_points == 1:
             first_trajectory_point = JointTrajectoryPoint()
@@ -343,8 +432,9 @@ class ReachyArmNode:
         # 2. Set motors to time-derived point until end time
         # 3. Keep trying to reach goal until goal tolerance time expires
         while not rospy.is_shutdown() and now_from_start < end_time + goal_time_tolerance:
+            # Indicate which side is reporting (edj 2021-05-08)
             if self._arm_action_server.is_preempt_requested():
-                rospy.loginfo(f"{self._name}: Arm movement preempted")
+                rospy.loginfo(f"{self._side}_arm_controller: Arm movement preempted")
                 self._arm_action_server.set_preempted()
                 return
 
@@ -378,20 +468,38 @@ class ReachyArmNode:
 
                 if not self._command_joints(joint_names, point):
                     self._arm_action_server.set_aborted()
-                    rospy.logwarn(f"{self._name}: Arm movement aborted")
+                    # Indicate which side is reporting (edj 2021-05-08)
+                    rospy.logwarn(f"{self._side}_arm_controller: Arm movement aborted")
                     return
 
                 self._update_feedback(deepcopy(point), joint_names, now_from_start)
 
             control_rate.sleep()
 
-        rospy.loginfo(f"{self._name}: Arm movement succeeded")
+        # Indicate which side is reporting (edj 2021-05-08)
+        rospy.loginfo(f"{self._side}_arm_controller: Arm movement succeeded")
         self._arm_result.error_code = self._arm_result.SUCCESSFUL
         self._arm_action_server.set_succeeded(self._arm_result)
 
+# Since we are now instantiating two ReachyArmControllers in one node
+# rather than running two nodes each with a single ReachyArmNode object
+# the spinning behavior had to be factored out of the ReachyArmController.
+def main():
+    rospy.init_node("reachy_arm", log_level=rospy.DEBUG)
+    update_spinner = rospy.Rate(rospy.get_param("~rate"))
+    right_arm = ReachyArmController(rospy.get_name(), 'right')
+    left_arm = ReachyArmController(rospy.get_name(), 'left')
+
+    def shutdown_hook():
+        right_arm.shutdown_hook()
+        left_arm.shutdown_hook()
+
+    rospy.on_shutdown(shutdown_hook)
+
+    while not rospy.is_shutdown():
+        right_arm.report_joint_state()
+        left_arm.report_joint_state()
+        update_spinner.sleep()
 
 if __name__ == "__main__":
-    rospy.init_node("reachy_arm", log_level=rospy.DEBUG)
-    arm = ReachyArmNode(rospy.get_name())
-    rospy.on_shutdown(arm.shutdown_hook)
-    arm.spin()
+    main()
