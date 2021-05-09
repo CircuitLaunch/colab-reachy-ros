@@ -109,14 +109,14 @@ class Greet(smach.State):
             except Exception as e:
                 rospy.logerr(f"Error performing arm gesture: {e}", exc_info=True)
 
-        rospy.sleep(10)
+        rospy.sleep(0.5)
 
         with self._mutex:  # Lock to prevent detection variables from changing in this block
             if self.preempt_requested():
                 return "preempted"
-            elif self._detected_masks == self._detected_faces and self._detected_faces > 0:
-                return "all_masks"
+            #elif self._detected_masks == self._detected_faces and self._detected_faces > 0:
+             #   return "all_masks"
             elif self._detected_masks < self._detected_faces:
                 return "missing_mask"
             else:
-                return "nobody_here"
+                return "all_masks"

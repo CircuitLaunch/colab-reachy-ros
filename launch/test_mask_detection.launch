@@ -1,6 +1,7 @@
 <launch>
+<remap from="/right_camera/image_raw" to="/reachy/right_camera/image_raw"/>
   <arg name="debug_output" default="true" />
-
+<group ns="reachy">
   <node name="right_camera" pkg="cv_camera" type="cv_camera_node">
     <param name="device_id" value="0" />
   </node>
@@ -11,4 +12,5 @@
     <param name="source" value="right_camera" />
     <param name="debug_output" value="$(arg debug_output)" />
   </node>
+    </group>
 </launch>

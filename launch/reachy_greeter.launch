@@ -1,4 +1,6 @@
 <launch>
+
+
   <!-- Select your Reachy configuration -->
   <arg name="head" default="true" />
   <arg name="left_arm" default="true" />
@@ -11,7 +13,10 @@
   <arg name="mask_debug" default="false" />
   <arg name="moveit_debug" default="false" />
 
+<!-- add all nodes to reachy group-->
+
   <!-- Face and mask detection-->
+
   <node name="right_camera" pkg="cv_camera" type="cv_camera_node">
     <param name="device_id" value="0" />
     <param name="rate" value="10" />
@@ -31,8 +36,6 @@
     <param name="device_name" value="ReSpeaker" />
   </node>
 
-  <node name="keyword_chatbot_node" pkg="colab_reachy_ros" type="keyword_chatbot_node.py" />
-
   <!-- head animation node -->
   <!-- aka move reachy's head around with this node -->
   <!-- if you are getting errors please switch to manual port assignment ex:  -->
@@ -48,6 +51,7 @@
       <param name="port" type="string" value="/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_7573530393135151A150-if00" />
       <param name="baud" type="int" value="57600" />
   </node>
+  
 
 
   <!-- MoveIt arms -->
@@ -87,6 +91,9 @@
   <!-- Given the published joint states, publish tf for the robot links -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
 
+  <!-- State machine -->
+  <node name="reachy_state_machine" pkg="colab_reachy_ros" type="reachy_state_machine.py" output="screen" />
+
   <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
   <include file="$(find reachy_moveit_config)/launch/move_group.launch">
     <arg name="head" value="false" />
@@ -99,8 +106,5 @@
     <arg name="pipeline" value="$(arg moveit_pipeline)"/>
   </include>
 
-  
-  <!-- State machine -->
-  <node name="reachy_state_machine" pkg="colab_reachy_ros" type="reachy_state_machine.py" output="screen" />
 
 </launch>
