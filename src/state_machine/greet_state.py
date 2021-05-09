@@ -31,7 +31,7 @@ class Greet(smach.State):
         # (http://docs.ros.org/en/melodic/api/trajectory_msgs/html/msg/JointTrajectoryPoint.html)
         #       simulates head shaking yes motion up and down
         self._head_yes_gesture = create_head_animation(
-            [[90.0, 80.0], [90.0, 115.0], [90.0, 80.0], [90.0, 115.0], [90.0, 80.0]]
+            [[94.0, 80.0], [94.0, 115.0], [94.0, 80.0], [94.0, 115.0], [94.0, 80.0]]
         )
 
         self._face_mask_subscriber = rospy.Subscriber(

@@ -3,6 +3,10 @@ import smach
 from state_machine.helper_functions import say_something
 from geometry_msgs.msg import PoseStamped
 
+# head node inclues
+from trajectory_msgs.msg import JointTrajectory
+from motion_control.head_node_helpers import create_head_animation
+
 
 class DirectToKitchen(smach.State):
     def __init__(self):
@@ -14,7 +18,16 @@ class DirectToKitchen(smach.State):
         super().__init__(outcomes=["completed", "preempted"])
 
         self._magni_publisher = rospy.Publisher("move_base_simple/goal", PoseStamped, queue_size=10)
+        
+        self._head_publisher = rospy.Publisher("/head/position_animator_debug_degrees", JointTrajectory, queue_size=1)
 
+        # head pose
+        #   shake the head two the right to indicate that the robot it going 
+        #    looking at the kitchen
+        self._head_look_right_gesture = create_head_animation(
+            [[94,80],[65,80],[65,80],[94,80]]
+        )
+        # Arm pose
         x, y, z, qx, qy, qz, qw = (0, -27, 0, 0, 0, 0, 1.0)  # Kitchen pose
 
         self._msg = PoseStamped()
@@ -38,6 +51,13 @@ class DirectToKitchen(smach.State):
 
         self._magni_publisher.publish(self._msg)  # Set a goal to Magni
         say_something("Please follow me to the Kitchen")
+
+        # move the head to the left indicate that reachy is looking toward the kitchen
+        try:
+            self._head_publisher.publish(self._head_yes_gesture)
+            rospy.loginfo("Head gesture: 'YES'")
+        except Exception as e:
+            rospy.logerr(f"Error performing head gesture: {e}", exc_info=True)
 
         rospy.sleep(10)
         return "completed"
