@@ -156,6 +156,8 @@ class ReachyArmController:
             #dxl_list = self._reachy.right_arm.motors
             self.armIds = [10, 11, 12, 13, 14, 15, 16, 17]
             dxl_list = [self.u2d2.getDXL(id) for id in self.armIds]
+            dxl_list[10].offset = -90.0
+            dxl_list[11].offset = -90.0
             side_letter = "r"
         elif self._side == "left":
             # Factored out into a shared class variable (edj 2021-05-08)
@@ -163,6 +165,9 @@ class ReachyArmController:
             #dxl_list = self._reachy.left_arm.motors
             self.armIds = [20, 21, 22, 23, 24, 25, 26, 27]
             dxl_list = [self.u2d2.getDXL(id) for id in self.armIds]
+            dxl_list[20].offset = 90.0
+            dxl_list[21].offset = 90.0
+            dxl_list[24].offset = -12.0
             side_letter = "l"
         else:
             raise ValueError("'side' private parameter must be 'left' or 'right")
