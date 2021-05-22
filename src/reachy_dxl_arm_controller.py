@@ -167,9 +167,12 @@ class ReachyArmController:
             self.armIds = [10, 11, 12, 13, 14, 15, 16, 17]
             dxl_list = [self.u2d2.getDXL(id) for id in self.armIds]
             dxl_list[0].offset = -90.0
+            dxl_list[0].polarity = -1
             dxl_list[1].offset = -90.0
-            dxl_list[6].polarity = -1
-            dxl_list[7].polarity = -1
+            dxl_list[1].polarity = -1
+            dxl_list[2].polarity = -1
+            dxl_list[3].polarity = -1
+            dxl_list[4].polarity = -1
             side_letter = "r"
         elif self._side == "left":
             # Factored out into a shared class variable (edj 2021-05-08)
@@ -177,12 +180,16 @@ class ReachyArmController:
             #dxl_list = self._reachy.left_arm.motors
             self.armIds = [20, 21, 22, 23, 24, 25, 26, 27]
             dxl_list = [self.u2d2.getDXL(id) for id in self.armIds]
-            dxl_list[0].polarity = -1
             dxl_list[0].offset = -90.0
+            dxl_list[0].polarity = -1
             dxl_list[1].offset = 90.0
-            dxl_list[4].offset = -12.0
+            dxl_list[1].polarity = -1
+            dxl_list[2].polarity = -1
+            dxl_list[3].polarity = -1
+            dxl_list[4].offset = 12.0
+            dxl_list[4].polaritt = -1
             dxl_list[5].polarity = -1
-            dxl_list[7].polarity = -1
+            dxl_list[6].polarity = -1
             side_letter = "l"
         else:
             raise ValueError("'side' private parameter must be 'left' or 'right")
@@ -257,7 +264,7 @@ class ReachyArmController:
         # Access synchronization (edj 2021-05-08)
         # with self._reachy_mutex:
             # self._joint_state.position = [self._dxl_motors[m].present_position * DEG_TO_RAD for m in self._ros_motor_names]
-        self._joint_state.position = [-math.radians(self._dxl_motors[m].presentPosition) for m in self._ros_motor_names]
+        self._joint_state.position = [math.radians(self._dxl_motors[m].presentPosition) for m in self._ros_motor_names]
 
         try:
             self._joint_state_publisher.publish(self._joint_state)
@@ -317,7 +324,7 @@ class ReachyArmController:
         # Access synchronization (edj 2021-05-08)
         # with self._reachy_mutex:
             # present_position = [self._dxl_motors[joint].present_position / DEG_TO_RAD for joint in joint_names]
-        present_position = [-math.radians(self._dxl_motors[name].presentPosition) for name in joint_names]
+        present_position = [math.radians(self._dxl_motors[name].presentPosition) for name in joint_names]
         return present_position
 
     def _update_feedback(self, cmd_point: JointTrajectoryPoint, joint_names: List[str], cur_time: float):
@@ -357,7 +364,7 @@ class ReachyArmController:
                 self._dxl_motors[m].goal_position = float(point.positions[i]) / DEG_TO_RAD
             '''
         dxlIds = [self._dxl_motors[name].id for name in joint_names]
-        degrees = [-math.degrees(pos) for pos in point.positions]
+        degrees = [math.degrees(pos) for pos in point.positions]
         #print(f'presentPositions:{dict(zip(joint_names, [self._dxl_motors[name].presentPosition for name in joint_names]))}')
         #print(f'goalPositions:{dict(zip(joint_names, degrees))}')
         self.u2d2.syncWrite(RAM_GOAL_POSITION, 2, dict(zip(dxlIds, degrees)))
