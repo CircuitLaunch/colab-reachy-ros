@@ -107,11 +107,20 @@ class ReachyArmController:
     # all instances, and synchronized by a mutex (edj 2021-05-08)
     #_unified_reachy = None
     '''
-    _unified_reachy_mutex = Lock()
+    _unified_u2d2 = None
+    # _unified_reachy_mutex = Lock()
 
+    @property
+    def u2d2(self):
+        if self.__class__._unified_u2d2 == None:
+            self.__class__._unified_u2d2 = DXLPort(rospy.get_param(f"~u2d2_port"), rospy.get_param(f"~u2d2_baud"))
+        return self.__class__._unified_u2d2
+
+    '''
     @property
     def _reachy_mutex(self):
         return self.__class__._unified_reachy_mutex
+    '''
 
     '''
     @property
@@ -134,7 +143,6 @@ class ReachyArmController:
     """
 
     def __init__(self, name, side):
-        self.u2d2 = DXLPort(rospy.get_param(f"~u2d2_port"), rospy.get_param(f"~u2d2_baud"))
 
         # Made these instance variables (edj 2021-05-08)
         self._arm_feedback = FollowJointTrajectoryFeedback()
@@ -242,9 +250,9 @@ class ReachyArmController:
         self._joint_state.header.stamp = rospy.Time.now()
 
         # Access synchronization (edj 2021-05-08)
-        with self._reachy_mutex:
+        # with self._reachy_mutex:
             # self._joint_state.position = [self._dxl_motors[m].present_position * DEG_TO_RAD for m in self._ros_motor_names]
-            self._joint_state.position = [math.radians(self._dxl_motors[m].presentPosition) for m in self._ros_motor_names]
+        self._joint_state.position = [math.radians(self._dxl_motors[m].presentPosition) for m in self._ros_motor_names]
 
         try:
             self._joint_state_publisher.publish(self._joint_state)
@@ -254,9 +262,9 @@ class ReachyArmController:
         self._joint_temperatures.header.stamp = rospy.Time.now()
 
         # Access synchronization (edj 2021-05-08)
-        with self._reachy_mutex:
+        # with self._reachy_mutex:
             #self._joint_temperatures.temperature = [self._dxl_motors[m].temperature for m in self._ros_motor_names]
-            self._joint_temperatures.temperature = [self._dxl_motors[m].presentTemperature for m in self._ros_motor_names]
+        self._joint_temperatures.temperature = [self._dxl_motors[m].presentTemperature for m in self._ros_motor_names]
         try:
             self._joint_temp_publisher.publish(self._joint_temperatures)
         except ROSException:
@@ -277,8 +285,7 @@ class ReachyArmController:
 
     def _set_arm_compliance(self, request: SetBool):
         self._arm_compliant = request.data
-        with self._reachy_mutex:
-            self.setArmCompliance(self._arm_compliant)
+        self.setArmCompliance(self._arm_compliant)
         '''
         for m in self._ros_motor_names[0:7]:  # End index is not included
             # Access synchronization (edj 2021-05-08)
@@ -291,8 +298,7 @@ class ReachyArmController:
 
     def _set_gripper_compliance(self, request: SetBool):
         self._gripper_compliant = request.data
-        with self._reachy_mutex:
-            self._dxl_motors[f'{self.side_letter}_gripper'].torqueEnable = 0 if self._gripper_compliant else 1
+        self._dxl_motors[f'{self.side_letter}_gripper'].torqueEnable = 0 if self._gripper_compliant else 1
         '''
         # Access synchronization (edj 2021-05-08)
         with self._reachy_mutex:
@@ -304,9 +310,9 @@ class ReachyArmController:
 
     def _get_current_positions(self, joint_names: List[str]):
         # Access synchronization (edj 2021-05-08)
-        with self._reachy_mutex:
+        # with self._reachy_mutex:
             # present_position = [self._dxl_motors[joint].present_position / DEG_TO_RAD for joint in joint_names]
-            present_position = [math.radians(self._dxl_motors[name].presentPosition) for name in joint_names]
+        present_position = [math.radians(self._dxl_motors[name].presentPosition) for name in joint_names]
         return present_position
 
     def _update_feedback(self, cmd_point: JointTrajectoryPoint, joint_names: List[str], cur_time: float):
@@ -349,8 +355,7 @@ class ReachyArmController:
         degrees = [-math.degrees(pos) for pos in point.positions]
         #print(f'presentPositions:{dict(zip(joint_names, [self._dxl_motors[name].presentPosition for name in joint_names]))}')
         #print(f'goalPositions:{dict(zip(joint_names, degrees))}')
-        with self._reachy_mutex:
-            self.u2d2.syncWrite(RAM_GOAL_POSITION, 2, dict(zip(dxlIds, degrees)))
+        self.u2d2.syncWrite(RAM_GOAL_POSITION, 2, dict(zip(dxlIds, degrees)))
         return True
 
     def _determine_trajectory_dimensions(self, trajectory_points: List[JointTrajectoryPoint]):
