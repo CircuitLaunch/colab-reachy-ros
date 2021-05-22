@@ -344,9 +344,9 @@ class ReachyArmController:
             '''
         dxlIds = [self._dxl_motors[name].id for name in joint_names]
         degrees = [math.degrees(pos) for pos in point.positions]
-        print(f'presentPositions:{dict(zip(joint_names, [self._dxl_motors[name].presentPosition for name in joint_names]))}')
-        print(f'goalPositions:{dict(zip(joint_names, degrees))}')
-        # self.u2d2.syncWrite(RAM_GOAL_POSITION, 2, dict(zip(dxlIds, degrees)))
+        #print(f'presentPositions:{dict(zip(joint_names, [self._dxl_motors[name].presentPosition for name in joint_names]))}')
+        #print(f'goalPositions:{dict(zip(joint_names, degrees))}')
+        self.u2d2.syncWrite(RAM_GOAL_POSITION, 2, dict(zip(dxlIds, degrees)))
         return True
 
     def _determine_trajectory_dimensions(self, trajectory_points: List[JointTrajectoryPoint]):
