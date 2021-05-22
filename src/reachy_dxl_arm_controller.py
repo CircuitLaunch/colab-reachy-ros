@@ -49,6 +49,7 @@ import actionlib
 import bisect
 from copy import deepcopy
 import operator
+import math
 import numpy as np
 # import reachy
 from DXL import *
@@ -110,7 +111,7 @@ class ReachyArmController:
     @property
     def _reachy_mutex(self):
         return self.__class__._unified_reachy_mutex
-    
+
     @property
     def _reachy(self):
         with self._reachy_mutex:
