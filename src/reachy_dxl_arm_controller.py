@@ -173,6 +173,7 @@ class ReachyArmController:
             dxl_list[2].polarity = -1
             dxl_list[3].polarity = -1
             dxl_list[4].polarity = -1
+            dxl_list[5].polarity = -1
             side_letter = "r"
         elif self._side == "left":
             # Factored out into a shared class variable (edj 2021-05-08)
@@ -181,7 +182,6 @@ class ReachyArmController:
             self.armIds = [20, 21, 22, 23, 24, 25, 26, 27]
             dxl_list = [self.u2d2.getDXL(id) for id in self.armIds]
             dxl_list[0].offset = -90.0
-            dxl_list[0].polarity = -1
             dxl_list[1].offset = 90.0
             dxl_list[1].polarity = -1
             dxl_list[2].polarity = -1
