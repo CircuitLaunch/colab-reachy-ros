@@ -110,7 +110,7 @@ class ReachyArmController:
     def _reachy_mutex(self):
         return self.__class__._unified_reachy_mutex
 
-    self.u2d2 = DXLPort(rospy.get_param("~u2d2Port"), rospy.get_param("~u2d2Baud"))
+    self.u2d2 = DXLPort(rospy.get_param("~u2d2_port"), rospy.get_param("~u2d2_baud"))
 
     '''
     @property
