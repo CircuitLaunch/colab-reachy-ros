@@ -101,6 +101,7 @@ reachy.parts.arm.LeftForceGripper = patch_force_gripper(reachy.parts.arm.LeftFor
 # class ReachyArmNode:
 class ReachyArmController:
 
+    '''
     # Introducing single reachy reference as a class variable to be shared by
     # all instances, and synchronized by a mutex (edj 2021-05-08)
     #_unified_reachy = None
@@ -109,10 +110,7 @@ class ReachyArmController:
     @property
     def _reachy_mutex(self):
         return self.__class__._unified_reachy_mutex
-
-    self.u2d2 = DXLPort(rospy.get_param("~u2d2_port"), rospy.get_param("~u2d2_baud"))
-
-    '''
+    
     @property
     def _reachy(self):
         with self._reachy_mutex:
@@ -133,6 +131,8 @@ class ReachyArmController:
     """
 
     def __init__(self, name, side):
+        self.u2d2 = DXLPort(rospy.get_param(f"~u2d2_port"), rospy.get_param(f"~u2d2_baud"))
+
         # Made these instance variables (edj 2021-05-08)
         self._arm_feedback = FollowJointTrajectoryFeedback()
         self._arm_result = FollowJointTrajectoryResult()
