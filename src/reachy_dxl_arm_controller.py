@@ -238,26 +238,30 @@ class ReachyArmController:
 
     def report_joint_state(self):
         self._joint_state.header.stamp = rospy.Time.now()
+        '''
         # Access synchronization (edj 2021-05-08)
         with self._reachy_mutex:
             self._joint_state.position = [
-                # self._dxl_motors[m].present_position * DEG_TO_RAD for m in self._ros_motor_names
-                math.radians(self._dxl_motors[m].presentPosition) for m in self._ros_motor_names
+                self._dxl_motors[m].present_position * DEG_TO_RAD for m in self._ros_motor_names
             ]
+        '''
+        self._joint_state.position = [math.radians(self._dxl_motors[m].presentPosition) for m in self._ros_motor_names]
         try:
             self._joint_state_publisher.publish(self._joint_state)
         except ROSException:
-            pass
+            rospy.logdebug('Exception raised on publishing joint_state')
 
         self._joint_temperatures.header.stamp = rospy.Time.now()
+        '''
         # Access synchronization (edj 2021-05-08)
         with self._reachy_mutex:
-            # self._joint_temperatures.temperature = [self._dxl_motors[m].temperature for m in self._ros_motor_names]
-            self._joint_temperatures.temperature = [self._dxl_motors[m].presentTemperature for m in self._ros_motor_names]
+            self._joint_temperatures.temperature = [self._dxl_motors[m].temperature for m in self._ros_motor_names]
+        '''
+        self._joint_temperatures.temperature = [self._dxl_motors[m].presentTemperature for m in self._ros_motor_names]
         try:
             self._joint_temp_publisher.publish(self._joint_temperatures)
         except ROSException:
-            pass
+            rospy.logdebug('Exception raised on publishing joint_temperatues')
 
         # Factored out into main() (edj 2021-05-08)
         # self._update_spinner.sleep()
