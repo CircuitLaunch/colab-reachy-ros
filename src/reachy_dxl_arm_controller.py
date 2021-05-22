@@ -252,7 +252,7 @@ class ReachyArmController:
         # Access synchronization (edj 2021-05-08)
         # with self._reachy_mutex:
             # self._joint_state.position = [self._dxl_motors[m].present_position * DEG_TO_RAD for m in self._ros_motor_names]
-        self._joint_state.position = [math.radians(self._dxl_motors[m].presentPosition) for m in self._ros_motor_names]
+        self._joint_state.position = [-math.radians(self._dxl_motors[m].presentPosition) for m in self._ros_motor_names]
 
         try:
             self._joint_state_publisher.publish(self._joint_state)
@@ -312,7 +312,7 @@ class ReachyArmController:
         # Access synchronization (edj 2021-05-08)
         # with self._reachy_mutex:
             # present_position = [self._dxl_motors[joint].present_position / DEG_TO_RAD for joint in joint_names]
-        present_position = [math.radians(self._dxl_motors[name].presentPosition) for name in joint_names]
+        present_position = [-math.radians(self._dxl_motors[name].presentPosition) for name in joint_names]
         return present_position
 
     def _update_feedback(self, cmd_point: JointTrajectoryPoint, joint_names: List[str], cur_time: float):
