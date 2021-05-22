@@ -835,16 +835,16 @@ class DXL:
     # This function will simply pass the value back for other registers.
     def convertForWrite(self, register: int, value):
         if register in [RAM_GOAL_POSITION, RAM_PRESENT_POSITION]:
-            return self.fromDegrees(value)
+            return self.fromDegrees(self.polarity * value)
         if register in [EEPROM_CW_ANGLE_LIMIT, EEPROM_CCW_ANGLE_LIMIT]:
-            return self.fromDegrees(value, useOffset = 0.0)
+            return self.fromDegrees(self.polarity * value, useOffset = 0.0)
         return value
 
     def convertForRead(self, register: int, value: int):
         if register in [RAM_GOAL_POSITION, RAM_PRESENT_POSITION]:
-            return self.toDegrees(value)
+            return self.polarity * self.toDegrees(value)
         if register in [EEPROM_CW_ANGLE_LIMIT, EEPROM_CCW_ANGLE_LIMIT]:
-            return self.fromDegrees(value, useOffset = 0.0)
+            return self.polarity * self.fromDegrees(value, useOffset = 0.0)
         return value
 
     def fromDegrees(self, degrees: float, useOffset: float = 1.0)->int:
