@@ -33,8 +33,8 @@
 
   <!-- Unified arm controller -->
   <node name="arm_controller" pkg="colab_reachy_ros" type="reachy_dxl_arm_controller.py" respawn="true" output="screen">
-    <param name="u2d2Port" value="'/dev/ttyUSB2'" />
-    <param name="u2d2Baud" value="'1000000'" />
+    <param name="u2d2Port" value="/dev/ttyUSB2" />
+    <param name="u2d2Baud" value="1000000" />
     <param name="rate" value="100" />
 
     <!-- If true, allows trajectories with non-zero speed and acceleration at start and end, so that they can be joined in a smooth overall trajectory -->
