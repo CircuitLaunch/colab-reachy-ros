@@ -485,6 +485,7 @@ class DXL:
         self.result = None
         self.error = None
         self.offset = 0.0
+        self.polarity = 1.0
         self.callback = callback
         self.callbackLock = Lock()
 
@@ -542,11 +543,11 @@ class DXL:
         steps, self.result, self.error = self.port.readUInt16(self.id, EEPROM_CW_ANGLE_LIMIT)
         with self.callbackLock:
             if self.callback != None: self.callback(self, self.result, self.error)
-        return self.toDegrees(steps)
+        return self.toDegrees(steps, useOffset = 0.0)
 
     @cwAngleLimit.setter
     def cwAngleLimit(self, value: int):
-        steps = self.fromDegrees(value)
+        steps = self.fromDegrees(value, useOffset = 0.0)
         self.result, self.error = self.port.writeUInt16(self.id, EEPROM_CW_ANGLE_LIMIT, steps)
         with self.callbackLock:
             if self.callback != None: self.callback(self, self.result, self.error)
@@ -556,11 +557,11 @@ class DXL:
         steps, self.result, self.error = self.port.readUInt16(self.id, EEPROM_CCW_ANGLE_LIMIT)
         with self.callbackLock:
             if self.callback != None: self.callback(self, self.result, self.error)
-        return self.toDegrees(steps)
+        return self.toDegrees(steps, useOffset = 0.0)
 
     @ccwAngleLimit.setter
     def ccwAngleLimit(self, value: int):
-        steps = self.fromDegrees(value)
+        steps = self.fromDegrees(value, useOffset = 0.0)
         self.result, self.error = self.port.writeUInt16(self.id, EEPROM_CCW_ANGLE_LIMIT, steps)
         with self.callbackLock:
             if self.callback != None: self.callback(self, self.result, self.error)
@@ -704,11 +705,11 @@ class DXL:
         steps, self.result, self.error = self.port.readUInt16(self.id, RAM_GOAL_POSITION)
         with self.callbackLock:
             if self.callback != None: self.callback(self, self.result, self.error)
-        return self.toDegrees(steps)
+        return self.polarity * self.toDegrees(steps)
 
     @goalPosition.setter
     def goalPosition(self, value: int):
-        steps = self.fromDegrees(value)
+        steps = self.fromDegrees(self.polarity * value)
         self.result, self.error = self.port.writeUInt16(self.id, RAM_GOAL_POSITION, steps)
         with self.callbackLock:
             if self.callback != None: self.callback(self, self.result, self.error)
@@ -744,7 +745,7 @@ class DXL:
         steps, self.result, self.error = self.port.readUInt16(self.id, RAM_PRESENT_POSITION)
         with self.callbackLock:
             if self.callback != None: self.callback(self, self.result, self.error)
-        return self.toDegrees(steps)
+        return self.polarity * self.toDegrees(steps)
 
     @property
     def presentSpeed(self):
@@ -833,24 +834,28 @@ class DXL:
     #
     # This function will simply pass the value back for other registers.
     def convertForWrite(self, register: int, value):
-        if register in [RAM_GOAL_POSITION, RAM_PRESENT_POSITION, EEPROM_CW_ANGLE_LIMIT, EEPROM_CCW_ANGLE_LIMIT]:
+        if register in [RAM_GOAL_POSITION, RAM_PRESENT_POSITION]:
             return self.fromDegrees(value)
+        if register in [EEPROM_CW_ANGLE_LIMIT, EEPROM_CCW_ANGLE_LIMIT]:
+            return self.fromDegrees(value, useOffset = 0.0)
         return value
 
     def convertForRead(self, register: int, value: int):
-        if register in [RAM_GOAL_POSITION, RAM_PRESENT_POSITION, EEPROM_CW_ANGLE_LIMIT, EEPROM_CCW_ANGLE_LIMIT]:
+        if register in [RAM_GOAL_POSITION, RAM_PRESENT_POSITION]:
             return self.toDegrees(value)
+        if register in [EEPROM_CW_ANGLE_LIMIT, EEPROM_CCW_ANGLE_LIMIT]:
+            return self.fromDegrees(value, useOffset = 0.0)
         return value
 
-    def fromDegrees(self, degrees: float)->int:
-        return int(self.centerOffset + (degrees + self.offset) / self.stepResolution)
+    def fromDegrees(self, degrees: float, useOffset: float = 1.0)->int:
+        return int(self.centerOffset + (degrees + (self.offset * useOffset)) / self.stepResolution)
 
-    def toDegrees(self, steps: int)->float:
+    def toDegrees(self, steps: int, useOffset: float = 1.0)->float:
         #print(steps)
         #print(self.port.modelName(self.model))
         #print(self.centerOffset)
         #print(self.stepResolution)
-        return (steps - self.centerOffset) * self.stepResolution - self.offset
+        return (steps - self.centerOffset) * self.stepResolution - (self.offset * useOffset)
 
 ################################################################################
 # Accessors to registers unique to AX, RX and EX models
