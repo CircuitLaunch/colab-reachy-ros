@@ -452,6 +452,7 @@ class DXLPort:
     # Pushes an actuator id, and a value into the synch write tx buffer
     def syncWritePush(self, dxl, register: int, value: int):
         if self.syncRegister == register:
+            value = int(value)
             param = [sdk.DXL_LOBYTE(sdk.DXL_LOWORD(value)), sdk.DXL_HIBYTE(sdk.DXL_LOWORD(value)), sdk.DXL_LOBYTE(sdk.DXL_HIWORD(value)), sdk.DXL_HIBYTE(sdk.DXL_HIWORD(value))]
             if not self.syncEncoder.addParam(dxl.id, param[0:self.syncDataLen]):
                 return False
