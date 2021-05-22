@@ -186,7 +186,7 @@ class ReachyArmController:
             dxl_list[1].polarity = -1
             dxl_list[2].polarity = -1
             dxl_list[3].polarity = -1
-            dxl_list[4].offset = -10
+            dxl_list[4].offset = -15
             dxl_list[4].polarity = -1
             dxl_list[5].polarity = -1
             dxl_list[6].polarity = -1
